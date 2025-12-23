@@ -1,44 +1,38 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Launch</title>
-
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/buttons.css">
-  <link rel="stylesheet" href="css/launch.css">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Cranium Gymnasium</title>
+  <link rel="stylesheet" href="css/base.css"/>
+  <link rel="stylesheet" href="css/buttons.css"/>
+  <link rel="stylesheet" href="css/launch.css"/>
 </head>
 
 <body class="page">
-
-  <!-- Video stage -->
   <div id="video-stage">
     <video id="introVideo" autoplay muted playsinline>
-      <source src="media/St_Philips_Gymnasium.mp4" type="video/mp4">
+      <source src="media/St_Philips_Gymnasium.mp4" type="video/mp4"/>
     </video>
   </div>
 
-  <!-- Welcome panel -->
   <div id="welcome-stage" class="hidden">
     <main class="center-screen">
-      <section class="glass-panel fade-in">
-
+      <section class="glass-panel narrow fade-in">
         <header class="app-header">
-          <h1>Welcome</h1>
+          <h1 class="brand">Cranium Gymnasium</h1>
+          <p class="subtitle">Train your mind.</p>
         </header>
 
-        <button id="enterBtn" class="cranium-button">Enter</button>
+        <div class="button-row">
+          <button id="enterBtn" class="cranium-button">Enter</button>
+        </div>
 
-        <footer class="app-footer">
-          <p>St Philip’s Quiz</p>
-        </footer>
-
+        <footer class="app-footer">🧠 Cranium Gymnasium</footer>
       </section>
     </main>
   </div>
 
-  <script src="js/transitions.js"></script>
-  <script src="js/launch.js"></script>
+  <script type="module" src="js/launch.js"></script>
 </body>
 </html>

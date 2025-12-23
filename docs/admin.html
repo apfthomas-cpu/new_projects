@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Cranium Gymnasium – Admin</title>
+
+  <link rel="stylesheet" href="css/base.css"/>
+  <link rel="stylesheet" href="css/buttons.css"/>
+  <link rel="stylesheet" href="css/admin.css"/>
+</head>
+
+<body class="page">
+<main class="center-screen">
+<section class="glass-panel fade-in">
+
+<header class="app-header">
+  <h1 class="brand">Cranium Gymnasium – Admin</h1>
+  <p class="subtitle">Manage sections and view pupil results</p>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" data-tab="sectionsTab">Sections</button>
+  <button class="tab-btn" data-tab="attemptsTab">Attempts Viewer</button>
+</div>
+
+<!-- ================= SECTIONS TAB ================= -->
+<div id="sectionsTab" class="tab active">
+
+  <div class="admin-grid">
+    <div class="admin-card">
+      <h2>Create / Edit Scroll Section</h2>
+
+      <div class="field">
+        <label for="titleInput">Title</label>
+        <input id="titleInput" type="text">
+      </div>
+
+      <div class="field">
+        <label for="textInput">Text</label>
+        <textarea id="textInput" rows="8"></textarea>
+      </div>
+
+      <div class="admin-row">
+        <div class="field">
+          <label>Base speed</label>
+          <input id="baseSpeed" type="number" value="28">
+        </div>
+        <div class="field">
+          <label>Boost</label>
+          <input id="boostSpeed" type="number" value="8">
+        </div>
+      </div>
+
+      <div class="admin-row">
+        <div class="field">
+          <label>Order</label>
+          <input id="orderInput" type="number" value="1">
+        </div>
+        <div class="field">
+          <label>Active</label>
+          <select id="activeToggle">
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="button-row">
+        <button id="previewBtn" class="cranium-button">Preview</button>
+        <button id="saveBtn" class="cranium-button">Save</button>
+        <button id="resetBtn" class="cranium-button">Reset</button>
+      </div>
+
+      <div id="previewWrap" class="preview-wrap hidden">
+        <div class="preview-head">
+          <strong>Preview (click mistakes)</strong>
+          <span id="mistakeCount">Mistakes: 0</span>
+        </div>
+        <div id="preview" class="preview"></div>
+      </div>
+
+      <p id="status" class="status"></p>
+    </div>
+
+    <div class="admin-card">
+      <h2>Existing Sections</h2>
+      <div id="list" class="list"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ================= ATTEMPTS TAB ================= -->
+<div id="attemptsTab" class="tab hidden">
+  <div class="admin-card">
+    <h2>Pupil Attempts</h2>
+
+    <div class="admin-row">
+      <div class="field">
+        <label>Filter by class</label>
+        <select id="filterClass">
+          <option value="">All</option>
+          <option>Form 6</option>
+          <option>Form 7</option>
+          <option>Form 8</option>
+          <option>Visitor</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Search name</label>
+        <input id="filterName" type="text" placeholder="Type name...">
+      </div>
+    </div>
+
+    <div id="attemptsList" class="list"></div>
+  </div>
+</div>
+
+<footer class="app-footer">🧠 Cranium Gymnasium</footer>
+
+</section>
+</main>
+
+<script type="module" src="js/admin.js"></script>
+</body>
+</html>

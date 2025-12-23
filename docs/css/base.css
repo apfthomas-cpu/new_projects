@@ -1,100 +1,99 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Montserrat:wght@600;700&display=swap");
 
-:root {
-  --glass-bg: rgba(255, 255, 255, 0.75);
-  --glass-blur: blur(12px);
-
+:root{
+  --glass: rgba(255,255,255,0.78);
+  --glass-dark: rgba(20,25,35,0.55);
+  --blur: blur(12px);
   --radius: 26px;
-  --shadow: 0 12px 35px rgba(0,0,0,0.28);
+  --shadow: 0 14px 40px rgba(0,0,0,0.30);
 
-  --text-dark: #000;
-  --text-light: #fff;
+  --text: #111;
+  --text-soft: rgba(10,10,10,0.72);
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+*{ box-sizing:border-box; }
+
+html, body{
+  margin:0;
+  padding:0;
+  width:100%;
+  height:100%;
+  font-family:"Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color:var(--text);
+  background: url("../media/Background.jpg") center/cover no-repeat fixed;
 }
 
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  font-family: "Poppins", sans-serif;
-  background: url("../media/Background.jpg") center center / cover no-repeat fixed;
-  color: var(--text-dark);
+.page{ opacity:0; transition:opacity .45s ease; }
+.page.page-visible{ opacity:1; }
+
+.center-screen{
+  min-height:100svh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:clamp(14px, 4vw, 46px);
 }
 
-/* === CENTERED LAYOUT === */
-.center-screen {
-  min-height: 100svh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: clamp(16px, 4vw, 48px);
+.glass-panel{
+  width:100%;
+  max-width:min(92vw, 860px);
+  background:var(--glass);
+  backdrop-filter:var(--blur);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:clamp(18px, 4vw, 46px);
 }
 
-/* === GLASS PANEL === */
-.glass-panel {
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-
-  width: 100%;
-  max-width: min(92vw, 820px);
-  padding: clamp(20px, 4vw, 48px);
+.glass-panel.narrow{
+  max-width:min(92vw, 520px);
 }
 
-/* === TYPOGRAPHY === */
-h1, h2, h3 {
-  font-family: "Montserrat", sans-serif;
-  margin: 0 0 0.6em;
-  text-align: center;
+.app-header{
+  text-align:center;
+  margin-bottom:clamp(10px, 2.5vw, 18px);
 }
 
-p {
-  margin: 0 0 1em;
-  line-height: 1.6;
-  font-size: clamp(1.05rem, 3.5vw, 1.2rem);
+.brand{
+  font-family:"Montserrat", sans-serif;
+  font-weight:700;
+  font-size:clamp(1.6rem, 5.5vw, 2.4rem);
+  margin:0 0 .35rem 0;
 }
 
-/* === HEADER / FOOTER === */
-.app-header,
-.app-footer {
-  text-align: center;
-  font-family: "Montserrat", sans-serif;
-  opacity: 0.85;
+.subtitle{
+  margin:0;
+  color:var(--text-soft);
+  font-size:clamp(1.02rem, 3.8vw, 1.2rem);
+  line-height:1.5;
 }
 
-.app-footer {
-  margin-top: 1.5rem;
-  font-size: 0.9rem;
-  opacity: 0.7;
+.app-footer{
+  text-align:center;
+  margin-top:clamp(14px, 3vw, 22px);
+  color:var(--text-soft);
+  font-family:"Montserrat", sans-serif;
+  font-size:clamp(.85rem, 3vw, .95rem);
 }
 
-/* === UTILITIES === */
-.hidden {
-  display: none !important;
+h2{
+  font-family:"Montserrat", sans-serif;
+  text-align:center;
+  margin:0 0 12px 0;
+  font-size:clamp(1.25rem, 4.2vw, 1.7rem);
 }
 
-/* === PAGE FADE TRANSITIONS === */
-.page {
-  opacity: 0;
-  transition: opacity 0.5s ease;
+p{
+  font-size:clamp(1.02rem, 3.9vw, 1.22rem);
+  line-height:1.6;
 }
 
-.page.page-visible {
-  opacity: 1;
-}
+.hidden{ display:none !important; }
 
-/* === MOBILE BOOST === */
-@media (max-width: 600px) {
-  body {
-    font-size: 18px;
-  }
+/* subtle panel entrance */
+.fade-in{
+  animation: panelIn .38s ease both;
+}
+@keyframes panelIn{
+  from{ opacity:0; transform: translateY(10px) scale(.995); }
+  to{ opacity:1; transform: translateY(0) scale(1); }
 }

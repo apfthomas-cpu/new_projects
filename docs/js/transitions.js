@@ -1,12 +1,9 @@
-// Fade in on load
+// docs/js/transitions.js
 window.addEventListener("DOMContentLoaded", () => {
   document.body.classList.add("page-visible");
 });
 
-// Fade out then navigate
-function navigateWithFade(url) {
+export function navigateWithFade(url) {
   document.body.classList.remove("page-visible");
-  setTimeout(() => {
-    window.location.href = url;
-  }, 500);
+  setTimeout(() => (window.location.href = url), 450);
 }
