@@ -1,58 +1,44 @@
+/* Scroll page layout */
+
+.scroll-page {
+  width: 100%;
+  min-height: 100vh;
+}
+
 .scroll-card {
-  width: min(95vw, 1200px);
-  height: min(80vh, 700px);
-  padding: clamp(16px, 3vw, 36px);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  height: 100%;
 }
 
+/* Viewport where text scrolls */
 #scrollViewport {
   flex: 1;
+  width: 100%;
   overflow: hidden;
   position: relative;
+  display: flex;
+  justify-content: center;
 }
 
+/* The scrolling text itself */
 #scrollContent {
   position: absolute;
-  width: 100%;
-  max-width: 75ch;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: clamp(1rem, 1.4vw, 1.35rem);
+  bottom: -100%;
+  width: min(100%, 1000px);
+  font-size: clamp(1.1rem, 2.2vw, 1.6rem);
   line-height: 1.6;
-  color: #111;
+  text-align: left;
+  padding: 0 8px;
   cursor: pointer;
 }
 
-#scrollContent span.word {
-  cursor: pointer;
-}
-
-#scrollContent span.word.bold {
-  font-weight: 700;
-}
-
+/* Footer */
 .scroll-footer {
+  width: 100%;
   display: flex;
   justify-content: space-between;
-  margin-top: 12px;
-  font-size: clamp(0.9rem, 1.2vw, 1rem);
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
   opacity: 0.8;
-}
-
-/* Tablets */
-@media (max-width: 1024px) {
-  .scroll-card {
-    width: 95vw;
-    height: 85vh;
-  }
-}
-
-/* Phones */
-@media (max-width: 600px) {
-  #scrollContent {
-    max-width: 90%;
-    font-size: clamp(1rem, 4vw, 1.2rem);
-  }
+  padding-top: 12px;
 }
