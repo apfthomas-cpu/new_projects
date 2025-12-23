@@ -11,30 +11,43 @@
 
 <body class="page fade">
 
+<div class="app">
   <main class="center-screen">
-    <!-- This is the big 90vw/90vh box like your reference -->
-    <section class="scroll-shell">
+
+    <section class="glass-modal glass-modal-wide scroll-panel">
 
       <header class="scroll-header">
         <h1>Cranium Gymnasium</h1>
         <p class="subtitle">Scrolling Accuracy Exercise</p>
       </header>
 
-      <div class="scroll-window">
-        <div id="scrollContent" class="scroll-content"></div>
+      <div class="scroll-wrapper">
+        <div class="scroll-window">
+          <div id="scrollContent" class="scroll-content">
+            Loading...
+          </div>
+        </div>
       </div>
 
       <footer class="scroll-footer">
-        <div id="scrollTitle">Loading...</div>
+        <div id="scrollTitle">Scroll Exercise</div>
         <div id="score">Score: 0</div>
       </footer>
 
-      <div id="scrollError" class="scroll-error" aria-live="polite"></div>
-
     </section>
   </main>
+</div>
 
-  <!-- MUST be module (because scroll.js imports Firebase modules) -->
-  <script type="module" src="js/scroll.js"></script>
+<!-- ===== END OVERLAY ===== -->
+<div id="endOverlay" class="end-overlay hidden">
+  <div class="overlay-box">
+    <h1>SECTION COMPLETE</h1>
+    <button id="continueBtn" class="cranium-button">
+      Continue to next section
+    </button>
+  </div>
+</div>
+
+<script type="module" src="js/scroll.js"></script>
 </body>
 </html>
