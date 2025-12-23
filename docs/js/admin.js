@@ -5,10 +5,10 @@ import {
   addDoc,
   getDocs,
   deleteDoc,
-  doc
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* 🔥 Firebase config */
+/* 🔥 FIREBASE CONFIG — PUT YOUR REAL API KEY HERE */
 const firebaseConfig = {
   apiKey: "AIzaSyCgjZv-a6t23QqELDSrY8402hZcY_N_Ors",
   authDomain: "cranium-gymnasium.firebaseapp.com",
@@ -18,13 +18,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-/* ===============================
-   Elements
-================================ */
+/* Elements */
 const titleInput = document.getElementById("titleInput");
 const scrollTextArea = document.getElementById("scrollText");
-const baseSpeedInput = document.getElementById("baseSpeed");
-const boostSpeedInput = document.getElementById("boostSpeed");
+const baseSpeed = document.getElementById("baseSpeed");
+const boostSpeed = document.getElementById("boostSpeed");
 const orderInput = document.getElementById("orderInput");
 const activeInput = document.getElementById("activeInput");
 const saveBtn = document.getElementById("saveBtn");
@@ -32,119 +30,64 @@ const resetBtn = document.getElementById("resetBtn");
 const sectionsList = document.getElementById("sectionsList");
 const makeMistakeBtn = document.getElementById("makeMistakeBtn");
 
-/* ===============================
-   Tabs
-================================ */
-document.querySelectorAll(".tab").forEach(tab => {
-  tab.addEventListener("click", () => {
-    document.querySelectorAll(".tab, .tab-content")
-      .forEach(el => el.classList.remove("active"));
-    tab.classList.add("active");
-    document.getElementById(tab.dataset.tab).classList.add("active");
-  });
-});
+/* --------------------------------------------------
+   Intelligent mistake generator
+-------------------------------------------------- */
+function smartMistake(word) {
+  const lower = word.toLowerCase();
 
-/* =========================================================
-   SMART MISTAKE GENERATOR
-========================================================= */
+  const common = {
+    families: "familys",
+    rain: "reign",
+    reign: "rain",
+    happy: "hapy",
+    their: "there",
+    there: "their",
+    your: "you're",
+    you're: "your",
+    our: "are",
+    are: "our",
+    clear: "cleer",
+    could: "could of",
+    should: "should of",
+    would: "would of",
+    its: "it's",
+    it's: "its"
+  };
 
-const confusionMap = {
-  families: ["familys"],
-  family: ["familys"],
-
-  rain: ["reign"],
-  reign: ["rain"],
-
-  happy: ["hapy"],
-  clear: ["cleer"],
-  friend: ["freind"],
-
-  their: ["there", "they're"],
-  there: ["their"],
-  they're: ["their"],
-
-  your: ["you're"],
-  you're: ["your"],
-
-  our: ["are"],
-  are: ["our"],
-
-  to: ["too"],
-  too: ["to"],
-
-  its: ["it's"],
-  it's: ["its"],
-
-  than: ["then"],
-  then: ["than"],
-
-  could: ["could of"],
-  should: ["should of"],
-  would: ["would of"]
-};
-
-function apostropheMistake(word) {
-  if (word.includes("'")) {
-    return word.replace("'", "");
+  if (common[lower]) {
+    return preserveCase(word, common[lower]);
   }
-  if (/^[A-Z][a-z]+$/.test(word)) {
-    return word + "s";
+
+  // Possessive: Albert's → Alberts
+  if (lower.endsWith("'s")) {
+    return word.replace(/'s$/i, "s");
   }
-  return null;
+
+  // Simple spelling drop
+  if (lower.length > 4) {
+    return word.slice(0, -1);
+  }
+
+  return word + word[word.length - 1];
 }
 
-function spellingMistake(word) {
-  if (word.length < 4) return null;
-
-  const variants = [
-    w => w.replace(/([a-z])/, '$1$1'),
-    w => w.replace(/([aeiou])/i, ""),
-    w => w.slice(0, -1),
-    w => w.replace(/ie/g, "ei"),
-    w => w.replace(/ei/g, "ie"),
-  ];
-
-  const fn = variants[Math.floor(Math.random() * variants.length)];
-  const res = fn(word);
-  return res !== word ? res : null;
-}
-
-function preserveCase(original, mistake) {
+function preserveCase(original, replacement) {
   if (original[0] === original[0].toUpperCase()) {
-    return mistake.charAt(0).toUpperCase() + mistake.slice(1);
+    return replacement.charAt(0).toUpperCase() + replacement.slice(1);
   }
-  return mistake;
+  return replacement;
 }
 
-function generateMistake(word) {
-  const clean = word.replace(/[^\w']/g, "");
-  const lower = clean.toLowerCase();
-
-  const apos = apostropheMistake(clean);
-  if (apos) return preserveCase(clean, apos);
-
-  if (confusionMap[lower]) {
-    const opts = confusionMap[lower];
-    const chosen = opts[Math.floor(Math.random() * opts.length)];
-    return preserveCase(clean, chosen);
-  }
-
-  const typo = spellingMistake(clean);
-  if (typo) return preserveCase(clean, typo);
-
-  return preserveCase(clean, clean.slice(0, -1));
-}
-
-/* =========================================================
-   Create mistake from selection
-========================================================= */
-
+/* --------------------------------------------------
+   Create mistake from selected word
+-------------------------------------------------- */
 makeMistakeBtn.addEventListener("click", () => {
   const start = scrollTextArea.selectionStart;
   const end = scrollTextArea.selectionEnd;
 
   if (start === end) {
-    alert("Select a single word first.");
+    alert("Select a word first.");
     return;
   }
 
@@ -152,76 +95,91 @@ makeMistakeBtn.addEventListener("click", () => {
   const selected = text.slice(start, end).trim();
 
   if (!selected || selected.includes(" ")) {
-    alert("Please select one word only.");
+    alert("Please select a single word.");
     return;
   }
 
-  const mistake = generateMistake(selected);
+  const mistake = smartMistake(selected);
   scrollTextArea.value =
     text.slice(0, start) + mistake + text.slice(end);
 });
 
-/* =========================================================
-   Save section
-========================================================= */
-
+/* --------------------------------------------------
+   Save section to Firestore
+-------------------------------------------------- */
 saveBtn.addEventListener("click", async () => {
   if (!titleInput.value || !scrollTextArea.value) {
     alert("Title and text required.");
     return;
   }
 
-  await addDoc(collection(db, "sections"), {
-    type: "scroll",
-    title: titleInput.value,
-    text: scrollTextArea.value,
-    baseSpeed: Number(baseSpeedInput.value || 20),
-    boost: Number(boostSpeedInput.value || 6),
-    order: Number(orderInput.value || 1),
-    active: activeInput.value === "true",
-    created: Date.now()
-  });
+  try {
+    await addDoc(collection(db, "sections"), {
+      type: "scroll",
+      title: titleInput.value,
+      text: scrollTextArea.value,
+      baseSpeed: Number(baseSpeed.value) || 30,
+      boost: Number(boostSpeed.value) || 8,
+      order: Number(orderInput.value) || 1,
+      active: activeInput.value === "true",
+      created: serverTimestamp()
+    });
 
-  resetForm();
-  loadSections();
+    resetForm();
+    loadSections();
+    alert("Section saved!");
+  } catch (err) {
+    console.error(err);
+    alert("Error saving section. Check console.");
+  }
 });
 
-/* Reset */
-resetBtn.addEventListener("click", resetForm);
-
+/* --------------------------------------------------
+   Reset form
+-------------------------------------------------- */
 function resetForm() {
   titleInput.value = "";
   scrollTextArea.value = "";
+  orderInput.value = 1;
 }
 
-/* =========================================================
-   Load sections list
-========================================================= */
-
+/* --------------------------------------------------
+   Load existing sections
+-------------------------------------------------- */
 async function loadSections() {
-  sectionsList.innerHTML = "";
-  const snap = await getDocs(collection(db, "sections"));
+  sectionsList.innerHTML = "<em>Loading…</em>";
 
-  snap.forEach(docSnap => {
-    const d = docSnap.data();
-    if (d.type !== "scroll") return;
+  try {
+    const snap = await getDocs(collection(db, "sections"));
+    sectionsList.innerHTML = "";
 
-    const div = document.createElement("div");
-    div.className = "item";
-    div.innerHTML = `
-      <strong>${d.title}</strong><br>
-      Active: ${d.active ? "Yes" : "No"}<br>
-      <button>Delete</button>
-    `;
+    snap.forEach(docSnap => {
+      const d = docSnap.data();
+      const div = document.createElement("div");
+      div.className = "item";
+      div.innerHTML = `
+        <strong>${d.title}</strong><br>
+        Active: ${d.active}<br>
+        <button>Delete</button>
+      `;
 
-    div.querySelector("button").onclick = async () => {
-      await deleteDoc(doc(db, "sections", docSnap.id));
-      loadSections();
-    };
+      div.querySelector("button").onclick = async () => {
+        if (confirm("Delete this section?")) {
+          await deleteDoc(doc(db, "sections", docSnap.id));
+          loadSections();
+        }
+      };
 
-    sectionsList.appendChild(div);
-  });
+      sectionsList.appendChild(div);
+    });
+
+    if (!snap.size) {
+      sectionsList.innerHTML = "<em>No sections yet.</em>";
+    }
+  } catch (err) {
+    console.error(err);
+    sectionsList.innerHTML = "<span style='color:red'>Error loading sections.</span>";
+  }
 }
 
-/* Init */
 loadSections();
