@@ -1,53 +1,86 @@
-.scroll-panel{
-  position:fixed;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding: clamp(14px, 4vw, 46px);
+/* Page layout */
+.scroll-page {
+  min-height: 100vh;
 }
 
-.scroll-frame{
-  width: min(94vw, 980px);
-  padding: clamp(16px, 3.5vw, 30px);
+.center-screen {
+  min-height: calc(100vh - 120px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: clamp(8px, 2vw, 24px);
 }
 
-.scroll-viewport{
-  height: min(70svh, 560px);
-  overflow:hidden;
-  position:relative;
-  border-radius: 18px;
+/* Main glass panel */
+.scroll-box {
+  width: 98vw;
+  max-width: 1600px;
+  min-height: 75vh;
+
+  padding: clamp(16px, 3vw, 36px);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-.scroll-content{
-  position:absolute;
-  left:0;
-  top:0;
-  width:100%;
-  will-change: transform;
+/* Scroll window fills panel */
+.scroll-window {
+  position: relative;
+  overflow: hidden;
+  flex: 1;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+/* Scrolling text fills window */
+.scroll-text {
+  position: absolute;
+  width: 100%;
+  max-width: none;
+  left: 0;
+  top: 100%;
+
+  font-size: clamp(1.2rem, 2.2vw, 1.8rem);
   line-height: 1.65;
-  font-size: clamp(1.1rem, 4.6vw, 1.55rem);
+  cursor: pointer;
 }
 
-.word{
-  cursor:pointer;
-  user-select:none;
+/* Each word */
+.scroll-text span {
+  cursor: pointer;
+  transition: font-weight 0.2s ease;
 }
 
-.word.clicked{
-  font-weight:700;
+.scroll-text span.bold {
+  font-weight: 700;
 }
 
-.scroll-hud{
-  margin-top: 14px;
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  font-family:"Montserrat", sans-serif;
-  color: rgba(0,0,0,0.75);
-  font-size: clamp(.95rem, 3.4vw, 1.05rem);
+/* Footer */
+.scroll-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+  opacity: 0.85;
 }
 
-@media (max-width: 520px){
-  .scroll-hud{ flex-direction:column; align-items:center; text-align:center; }
+/* Tablet */
+@media (max-width: 1024px) {
+  .scroll-box {
+    width: 96vw;
+    max-width: none;
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .scroll-box {
+    width: 98vw;
+    min-height: 78vh;
+    padding: 18px;
+  }
+
+  .scroll-text {
+    font-size: clamp(1.1rem, 4vw, 1.4rem);
+  }
 }
