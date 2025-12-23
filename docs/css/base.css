@@ -20,7 +20,7 @@ body.page {
   color: #111;
 
   /* Background image */
-  background: url("../media/Background.jpg") no-repeat center center fixed;
+  background: url("/new_projects/media/Background.jpg") no-repeat center center fixed;
   background-size: cover;
 }
 
