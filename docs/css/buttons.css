@@ -1,0 +1,16 @@
+.cranium-button {
+  padding: 14px 32px;
+  border-radius: 14px;
+  border: none;
+  font-size: 18px;
+  font-family: "Montserrat", sans-serif;
+  background: linear-gradient(to bottom, #9aa5b1, #6f7882);
+  color: white;
+  cursor: pointer;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.cranium-button:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}

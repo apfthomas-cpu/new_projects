@@ -1,0 +1,33 @@
+#scroll-wrapper {
+  display: none;
+  position: absolute;
+  inset: 5vh 5vw;
+  background: var(--glass-bg);
+  backdrop-filter: var(--blur);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+#scroll-text {
+  position: absolute;
+  padding: 30px;
+  font-size: 20px;
+  line-height: 1.6;
+}
+
+.word {
+  cursor: pointer;
+}
+
+.correct { font-weight: 700; }
+.incorrect { opacity: 0.4; }
+
+#launch-overlay,
+#end-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#end-overlay { display: none; }
