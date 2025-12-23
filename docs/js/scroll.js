@@ -4,7 +4,7 @@ const exercise = document.getElementById("exercise");
 const scrollText = document.getElementById("scrollText");
 const wrapper = document.getElementById("scroll-wrapper");
 
-/* Mistakes list from original file */
+/* Mistakes list */
 const mistakes = [
   "Apples","are","are","wite","eligance","presision","tecnology",
   "familys","acheiving","rely","There","flogship","Samsungs",
@@ -13,8 +13,12 @@ const mistakes = [
 
 let position = 0;
 let lastTime = performance.now();
-let pixelsPerSecond = 12.5;
-let targetSpeed = 12.5;
+
+/* 🔽 HALVED SPEED SETTINGS */
+let pixelsPerSecond = 6.25;   // was ~12.5
+let targetSpeed = 6.25;       // was ~12.5
+const speedBoost = 3;        // was ~6
+
 let running = false;
 
 /* Wrap words */
@@ -31,7 +35,7 @@ function prepareWords() {
   });
 }
 
-/* Handle clicks → bold + speed up */
+/* Handle clicks → bold + slower boost */
 function handleWordClick(span) {
   if (!running) return;
 
@@ -40,7 +44,7 @@ function handleWordClick(span) {
   if (mistakes.includes(clean)) {
     if (!span.classList.contains("found")) {
       span.classList.add("found");
-      targetSpeed += 6; // same boost as original
+      targetSpeed += speedBoost; // 🔼 slower increase
     }
   }
 }
@@ -52,13 +56,11 @@ startBtn.addEventListener("click", () => {
   prepareWords();
   running = true;
 
-  requestAnimationFrame(() => {
-    position = wrapper.clientHeight * 0.5;
-    scrollText.style.top = position + "px";
-  });
+  position = wrapper.clientHeight * 0.5;
+  scrollText.style.top = position + "px";
 });
 
-/* Scroll loop with smoothing */
+/* Smooth scroll loop */
 function scrollLoop(t) {
   const delta = (t - lastTime) / 1000;
   lastTime = t;

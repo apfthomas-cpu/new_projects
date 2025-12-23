@@ -10,21 +10,30 @@
   <link rel="stylesheet" href="css/scroll.css">
 </head>
 
-<body class="scroll-page">
+<body class="page">
+
   <main class="center-screen">
 
     <!-- Intro -->
-    <section id="intro" class="glass-box scroll-intro">
-      <h1>Scrolling Exercise</h1>
+    <section id="intro" class="glass-panel fade-in scroll-intro">
+      <header class="app-header">
+        <h1>Scrolling Exercise</h1>
+      </header>
+
       <p class="instructions">
         In this section, you will need to read a text that scrolls continuously upwards and to click on the mistakes that you find. The more mistakes you identify, the faster the text will scroll.
       </p>
+
       <button id="startBtn" class="cranium-button">Start</button>
+
+      <footer class="app-footer">
+        <p>Read carefully and be quick!</p>
+      </footer>
     </section>
 
     <!-- Exercise -->
     <section id="exercise" class="scroll-stage hidden">
-      <div id="scroll-wrapper">
+      <div id="scroll-wrapper" class="fade-in">
         <div id="scrollText">
 
 <p>Apples iStore are instantly recognizable. Its architecture are sleek, minimalist, and almost museum-like. The walls are wite, the tables are wooden, and the devices are displayed with presision. This design reflects Apple’s marketing strategy: simplicity, eligance, and exclusivity. The store itself is part of the brand’s storytelling, reinforcing the idea that Apple products are not just tools but lifestyle choices.</p>
@@ -35,17 +44,13 @@
 
 <p>Samsungs marketing, on the other hand, emphasizes practicality and variety. Their campaigns highlight how devices integrate into daily life—phones that connect to smart fridges, tablets that help with work, and TVs that transform living rooms. The flagship store mirrors this approach by offering demonstrations and workshops that show technology in action. The message is clear: Samsung wants to prove that its products are useful in every corner of life.</p>
 
-<p>Yet both approaches fice challenges. Apple’s iStore sometimes feels intimidating. The polished environment can make customers hesitant to ask questions, and the high prices reinforce the sense of exclusivity. Moreover, Apple’s constant cycle of new product releases encourages frequent upgrades, raising concerns about sustainability and electronic waste. Critics argue that this “upgrade culture” pressures consumers to replace devices unnecessarily.</p>
+<p>Yet both approaches fice challenges. Apple’s iStore sometimes feels intimidating. The polished environment can make customers hesitant to ask questions, and the high prices reinforce the sense of exclusivity. Moreover, Apple’s constant cycle of new product releases encourages frequent upgrades, raising concerns about sustainability and electronic waste.</p>
 
-<p>Samsung’s flagship store faces a different set of issues. Its size and variety can be overwhelming. With so many zones and activities, visitors may become distracted from the core products. Some people come for the workshops or café without engaging deeply with the devices. Additionally, Samsung’s flagship concept has struggled with consistency; while London’s store thrives, similar spaces in other cities have closed when sales slowed.</p>
+<p>The differences can be summarized as tone. Apple’s markting is like a whisper—calm, elegant, persuasive. Samsung’s marketing is like a shout—energetic, colorful, and full of action.</p>
 
-<p>Apple’s iStore attracts tourists from around the world. Many visitors come not only to shop but to experience the brand’s prestige. The store becomes a destination, a place to take photos and feel part of the Apple community. Samsung’s flagship store, in contrast, appeals more to locals who want to explore technology in a hands-on way. It is less about prestige and more about participation.</p>
+<p>The practical issues remain importants. Apple’s upgrade culture raises questions about environmental responsibility.</p>
 
-<p>The differences can be summarized as tone. Apple’s markting is like a whisper—calm, elegant, persuasive. Samsung’s marketing is like a shout—energetic, colorful, and full of action. Apple makes customers feel like they are joining an exclusive club. Samsung makes them feel like they are joining a community experiment. Both companies design their stores as more than retail spaces.</p>
-
-<p>The practical issues remain importants. Apple’s upgrade culture raises questions about environmental responsibility. Samsung’s flagship model raises questions about sustainability of the concept itself. Yet both continue to innovate in how they present technology to the public.</p>
-
-<p>Ultimitely, Apple wins in loyalty. Customers often line up overnight for new iPhones, driven by emotional connection to the brand. Samsung wins in engagement. Visitors spend hours exploring, experimenting, and learning, even if they don’t make a purchase.</p>
+<p>Ultimitely, Apple wins in loyalty. Customers often line up overnight for new iPhones.</p>
 
         </div>
       </div>
@@ -53,6 +58,7 @@
 
   </main>
 
+  <script src="js/transitions.js"></script>
   <script src="js/scroll.js"></script>
 </body>
 </html>
