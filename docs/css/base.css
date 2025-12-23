@@ -1,99 +1,207 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Montserrat:wght@600;700&display=swap");
+/* =========================================
+   Cranium Gymnasium – Global Base Styles
+   Responsive, centered, glass UI system
+========================================= */
 
-:root{
-  --glass: rgba(255,255,255,0.78);
-  --glass-dark: rgba(20,25,35,0.55);
-  --blur: blur(12px);
-  --radius: 26px;
-  --shadow: 0 14px 40px rgba(0,0,0,0.30);
-
-  --text: #111;
-  --text-soft: rgba(10,10,10,0.72);
+/* Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-*{ box-sizing:border-box; }
-
-html, body{
-  margin:0;
-  padding:0;
-  width:100%;
-  height:100%;
-  font-family:"Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  color:var(--text);
-  background: url("../media/Background.jpg") center/cover no-repeat fixed;
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(180deg, #3f4f54 0%, #8aa0a8 50%, #5c6ea8 100%);
+  color: #111;
+  overflow-x: hidden;
 }
 
-.page{ opacity:0; transition:opacity .45s ease; }
-.page.page-visible{ opacity:1; }
+/* =========================================
+   App shell
+========================================= */
 
-.center-screen{
-  min-height:100svh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:clamp(14px, 4vw, 46px);
+.app {
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
 }
 
-.glass-panel{
-  width:100%;
-  max-width:min(92vw, 860px);
-  background:var(--glass);
-  backdrop-filter:var(--blur);
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
-  padding:clamp(18px, 4vw, 46px);
+/* =========================================
+   Centering utility
+========================================= */
+
+.center-screen {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: clamp(12px, 3vw, 40px);
 }
 
-.glass-panel.narrow{
-  max-width:min(92vw, 520px);
+/* =========================================
+   Glass panel system
+========================================= */
+
+.glass-modal {
+  width: 100%;
+  max-width: min(1100px, 96vw);
+  min-height: 240px;
+
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  border-radius: 28px;
+  padding: clamp(18px, 3vw, 48px);
+
+  box-shadow:
+    0 20px 40px rgba(0,0,0,0.25),
+    inset 0 1px 0 rgba(255,255,255,0.4);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(12px, 2vw, 24px);
 }
 
-.app-header{
-  text-align:center;
-  margin-bottom:clamp(10px, 2.5vw, 18px);
+/* Wider panels (scroll, admin) */
+.glass-modal.wide {
+  max-width: min(1600px, 98vw);
 }
 
-.brand{
-  font-family:"Montserrat", sans-serif;
-  font-weight:700;
-  font-size:clamp(1.6rem, 5.5vw, 2.4rem);
-  margin:0 0 .35rem 0;
+/* Near fullscreen panels */
+.glass-modal.full {
+  width: 100%;
+  max-width: 100%;
+  min-height: calc(100vh - 80px);
 }
 
-.subtitle{
-  margin:0;
-  color:var(--text-soft);
-  font-size:clamp(1.02rem, 3.8vw, 1.2rem);
-  line-height:1.5;
+/* =========================================
+   Typography
+========================================= */
+
+h1, h2, h3 {
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
 }
 
-.app-footer{
-  text-align:center;
-  margin-top:clamp(14px, 3vw, 22px);
-  color:var(--text-soft);
-  font-family:"Montserrat", sans-serif;
-  font-size:clamp(.85rem, 3vw, .95rem);
+h1 {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
 }
 
-h2{
-  font-family:"Montserrat", sans-serif;
-  text-align:center;
-  margin:0 0 12px 0;
-  font-size:clamp(1.25rem, 4.2vw, 1.7rem);
+h2 {
+  font-size: clamp(1.4rem, 3vw, 2rem);
 }
 
-p{
-  font-size:clamp(1.02rem, 3.9vw, 1.22rem);
-  line-height:1.6;
+p {
+  margin: 0;
+  font-size: clamp(1rem, 2.6vw, 1.2rem);
+  line-height: 1.6;
+  text-align: center;
 }
 
-.hidden{ display:none !important; }
+/* Utility */
+.text-left { text-align: left; }
+.text-center { text-align: center; }
 
-/* subtle panel entrance */
-.fade-in{
-  animation: panelIn .38s ease both;
+/* =========================================
+   Buttons
+========================================= */
+
+button {
+  border: none;
+  border-radius: 14px;
+  padding: 12px 22px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-family: inherit;
+  background: linear-gradient(180deg, #8a9299, #6f777e);
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+  transition: transform .15s ease, box-shadow .15s ease;
 }
-@keyframes panelIn{
-  from{ opacity:0; transform: translateY(10px) scale(.995); }
-  to{ opacity:1; transform: translateY(0) scale(1); }
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.35);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* =========================================
+   Inputs
+========================================= */
+
+input, select, textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: none;
+  font-size: 1rem;
+  font-family: inherit;
+  outline: none;
+}
+
+/* =========================================
+   Links
+========================================= */
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* =========================================
+   Fade transitions
+========================================= */
+
+.page {
+  animation: fadeIn .45s ease both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================================
+   Responsive tweaks
+========================================= */
+
+@media (max-width: 900px) {
+  .glass-modal.wide {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .glass-modal {
+    border-radius: 20px;
+    padding: 16px;
+  }
+
+  .center-screen {
+    padding: 10px;
+  }
+
+  p {
+    font-size: clamp(1rem, 4vw, 1.1rem);
+  }
 }
