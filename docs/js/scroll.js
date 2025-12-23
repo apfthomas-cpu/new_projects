@@ -2,25 +2,26 @@ const startBtn = document.getElementById("startBtn");
 const intro = document.getElementById("intro");
 const exercise = document.getElementById("exercise");
 const scrollText = document.getElementById("scrollText");
+const wrapper = document.getElementById("scroll-wrapper");
 
-/* 👉 List of mistake words */
+/* Mistakes list from original file */
 const mistakes = [
-  "Apples","are","wite","elegance","presision","Samsungs",
-  "flogship","tecnology","familys","acheiving",
-  "There","markting","importants","Ultimitely"
+  "Apples","are","are","wite","eligance","presision","tecnology",
+  "familys","acheiving","rely","There","flogship","Samsungs",
+  "fice","markting","importants","Ultimitely"
 ];
 
-let speed = 0.35;
-let pos = -100;
+let position = 0;
+let lastTime = performance.now();
+let pixelsPerSecond = 12.5;
+let targetSpeed = 12.5;
 let running = false;
 
-/* Wrap every word in spans */
+/* Wrap words */
 function prepareWords() {
-  const paragraphs = scrollText.querySelectorAll("p");
-
-  paragraphs.forEach(p => {
-    const words = p.innerText.split(" ");
-    p.innerHTML = words
+  scrollText.querySelectorAll("p").forEach(p => {
+    p.innerHTML = p.innerText
+      .split(" ")
       .map(w => `<span class="word">${w}</span>`)
       .join(" ");
   });
@@ -30,7 +31,7 @@ function prepareWords() {
   });
 }
 
-/* Handle clicks */
+/* Handle clicks → bold + speed up */
 function handleWordClick(span) {
   if (!running) return;
 
@@ -39,24 +40,35 @@ function handleWordClick(span) {
   if (mistakes.includes(clean)) {
     if (!span.classList.contains("found")) {
       span.classList.add("found");
-      speed += 0.15; // 🔼 increase scroll speed
+      targetSpeed += 6; // same boost as original
     }
   }
 }
 
-/* Start scrolling */
+/* Start */
 startBtn.addEventListener("click", () => {
   intro.classList.add("hidden");
   exercise.classList.remove("hidden");
   prepareWords();
   running = true;
-  requestAnimationFrame(scrollLoop);
+
+  requestAnimationFrame(() => {
+    position = wrapper.clientHeight * 0.5;
+    scrollText.style.top = position + "px";
+  });
 });
 
-/* Scroll animation loop */
-function scrollLoop() {
-  if (!running) return;
-  pos += speed;
-  scrollText.style.bottom = pos + "%";
+/* Scroll loop with smoothing */
+function scrollLoop(t) {
+  const delta = (t - lastTime) / 1000;
+  lastTime = t;
+
+  if (running) {
+    pixelsPerSecond += (targetSpeed - pixelsPerSecond) * 0.04;
+    position -= pixelsPerSecond * delta;
+    scrollText.style.top = position + "px";
+  }
+
   requestAnimationFrame(scrollLoop);
 }
+requestAnimationFrame(scrollLoop);
