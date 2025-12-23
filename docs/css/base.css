@@ -14,14 +14,7 @@ html, body {
 
 /* ===== Page background ===== */
 body.page {
-  min-height: 100vh;
-  width: 100%;
-  font-family: "Poppins", system-ui, sans-serif;
-  color: #111;
-
-  /* Background image */
-  background: url("../media/Background.jpg") no-repeat center center fixed;
-  background-size: cover;
+  background: red !important;
 }
 
 /* ===== App wrapper fills viewport ===== */
