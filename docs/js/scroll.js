@@ -1,153 +1,153 @@
-import { db } from "./firebase.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
-  collection,
-  getDocs,
-  query,
-  where
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  getFirestore, collection, getDocs, query, where, orderBy
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const scrollContent = document.getElementById("scrollContent");
+/* 🔥 Firebase config — SAME as admin.js */
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "cranium-gymnasium.firebaseapp.com",
+  projectId: "cranium-gymnasium",
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+/* Elements */
+const wrapper = document.getElementById("scroll-wrapper");
+const textBox = document.getElementById("scroll-text");
 const scoreEl = document.getElementById("score");
-const titleEl = document.getElementById("scrollTitle");
-const endOverlay = document.getElementById("endOverlay");
-const continueBtn = document.getElementById("continueBtn");
-const wrapper = document.querySelector(".scroll-window");
+const statusEl = document.getElementById("status");
 
-let score = 0;
-let mistakes = [];
+/* End overlay */
+const endOverlay = document.getElementById("end-overlay");
+const continueBtn = document.getElementById("continue-btn");
 
+/* State */
 let position = 0;
 let lastTime = performance.now();
-
-let pixelsPerSecond = 14;
-let targetSpeed = 14;
-let boostAmount = 5;
-
-let started = false;
+let baseSpeed = 12;
+let boostSpeed = 6;
+let speed = baseSpeed;
+let score = 0;
 let ended = false;
 
-/* =========================
-   Load from Firestore
-========================= */
-
-async function loadScrollSection() {
-  titleEl.textContent = "Loading...";
-
+/* ============================================================
+   Load active scroll section from Firestore
+   ============================================================ */
+async function loadSection() {
   try {
     const q = query(
-      collection(db, "scroll_sections"),
-      where("active", "==", true)
+      collection(db, "sections"),
+      where("type", "==", "scroll"),
+      where("active", "==", true),
+      orderBy("order")
     );
 
     const snap = await getDocs(q);
 
-    if (snap.empty) {
-      throw new Error("No active scroll sections found.");
-    }
+    if (snap.empty) throw new Error("No active scroll sections.");
 
-    const sections = snap.docs.map(d => d.data());
-    const chosen = sections[Math.floor(Math.random() * sections.length)];
+    const data = snap.docs[0].data();
+    baseSpeed = data.baseSpeed || 12;
+    boostSpeed = data.boost || 6;
+    speed = baseSpeed;
 
-    titleEl.textContent = chosen.title || "Scrolling Exercise";
-    scrollContent.innerHTML = chosen.text || "<p>No text provided.</p>";
-    mistakes = chosen.mistakes || [];
+    buildText(data.text);
+    statusEl.textContent = "Loaded from Firebase";
 
-    pixelsPerSecond = Number(chosen.baseSpeed ?? 14);
-    targetSpeed = pixelsPerSecond;
-    boostAmount = Number(chosen.boostSpeed ?? 5);
-
-    prepareText();
     startScroll();
-
   } catch (err) {
-    console.error("Failed to load scroll section:", err);
-    titleEl.textContent = "Error loading section";
-    scrollContent.innerHTML = "<p>Unable to load scrolling text.</p>";
+    console.error(err);
+    statusEl.textContent = "Demo Scroll (Firebase failed)";
+    buildText(
+      "This is a fallback passage so the scroll still works. Click the word mistake to test scoring and speed. Everything else should be marked incorrect."
+    );
+    startScroll();
   }
 }
 
-/* =========================
-   Prepare clickable words
-========================= */
+/* ============================================================
+   Build clickable words
+   ============================================================ */
+function buildText(text) {
+  textBox.innerHTML = "";
 
-function prepareText() {
-  scrollContent.querySelectorAll("p").forEach(p => {
-    p.innerHTML = p.innerText
-      .split(" ")
-      .map(w => `<span class="word">${w}</span>`)
-      .join(" ");
-  });
-
-  scrollContent.querySelectorAll(".word").forEach(span => {
-    span.addEventListener("click", () => {
-      if (!started || ended) return;
-
-      const clean = span.innerText.replace(/[^\w’']/g, "");
-
-      // Always bold when clicked
-      span.classList.add("selected");
-
-      // Only correct mistakes affect score + speed
-      if (mistakes.includes(clean)) {
-        if (!span.classList.contains("correct")) {
-          span.classList.add("correct");
-          score++;
-          scoreEl.textContent = `Score: ${score}`;
-          targetSpeed += boostAmount;
-        }
-      }
-    });
+  text.split(/\s+/).forEach(word => {
+    const span = document.createElement("span");
+    span.className = "word";
+    span.textContent = word + " ";
+    span.addEventListener("click", () => onWordClick(span));
+    textBox.appendChild(span);
   });
 }
 
-/* =========================
+/* ============================================================
+   Click logic
+   ============================================================ */
+function onWordClick(span) {
+  if (ended || span.classList.contains("clicked")) return;
+
+  span.classList.add("clicked");
+  span.style.fontWeight = "700";
+  span.style.color = "#000";
+
+  if (span.textContent.toLowerCase().includes("@") ||
+      span.textContent.includes("0") ||
+      span.textContent.match(/zz|ee/)) {
+    // correct mistake
+    score++;
+    speed += boostSpeed;
+    scoreEl.textContent = score;
+  }
+  // wrong clicks just bold — no penalty, no boost
+}
+
+/* ============================================================
    Start scrolling
-========================= */
-
+   ============================================================ */
 function startScroll() {
-  requestAnimationFrame(() => {
-    position = wrapper.clientHeight;
-    scrollContent.style.top = position + "px";
-    started = true;
-  });
+  wrapper.style.display = "block";
+  position = wrapper.clientHeight * 0.9;
+  textBox.style.top = position + "px";
+
+  requestAnimationFrame(scrollLoop);
 }
 
-/* =========================
-   Animation loop
-========================= */
-
+/* ============================================================
+   Smooth scroll loop (top-based)
+   ============================================================ */
 function scrollLoop(t) {
+  if (ended) return;
+
   const delta = (t - lastTime) / 1000;
   lastTime = t;
 
-  if (started && !ended) {
-    pixelsPerSecond += (targetSpeed - pixelsPerSecond) * 0.05;
-    position -= pixelsPerSecond * delta;
-    scrollContent.style.top = position + "px";
+  position -= speed * delta;
+  textBox.style.top = position + "px";
 
-    const h = scrollContent.offsetHeight;
-    if (position + h <= 0) {
-      ended = true;
-      endOverlay.classList.remove("hidden");
-    }
+  if (position + textBox.offsetHeight <= 0) {
+    finish();
+    return;
   }
 
   requestAnimationFrame(scrollLoop);
 }
 
-/* =========================
-   Continue button
-========================= */
+/* ============================================================
+   Finish
+   ============================================================ */
+function finish() {
+  ended = true;
+  endOverlay.style.display = "flex";
+}
 
 continueBtn.addEventListener("click", () => {
-  // TODO: replace with your next section URL later
-  window.location.href = "#";
+  // link later
+  alert("Next section coming soon!");
 });
 
-/* =========================
+/* ============================================================
    Init
-========================= */
-
-scoreEl.textContent = "Score: 0";
-loadScrollSection();
-requestAnimationFrame(scrollLoop);
+   ============================================================ */
+loadSection();
