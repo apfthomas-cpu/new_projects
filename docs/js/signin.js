@@ -1,9 +1,11 @@
+const form = document.getElementById("signinForm");
 const classSelect = document.getElementById("classSelect");
 const nameInput = document.getElementById("nameInput");
 const errorMsg = document.getElementById("errorMsg");
-const continueBtn = document.getElementById("continueBtn");
 
-continueBtn.addEventListener("click", () => {
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+
   const cls = classSelect.value.trim();
   const name = nameInput.value.trim();
 

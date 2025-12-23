@@ -1,32 +1,32 @@
 /* Sign-in page layout */
 
 .signin-page {
-  min-height: 100vh;
+  min-height: 100svh;
 }
 
+/* Modal box */
 .signin-box {
-  width: min(92vw, 420px);
+  width: min(92vw, 440px);
   text-align: center;
 }
 
-.signin-box h1 {
-  margin: 0 0 18px;
-  font-size: clamp(1.6rem, 4vw, 2.2rem);
-  font-family: "Montserrat", sans-serif;
+/* Form fields */
+.signin-box .field {
+  margin: 14px 0;
+  text-align: left;
 }
 
 .signin-box label {
   display: block;
-  text-align: left;
-  margin: 12px 0 6px;
+  margin-bottom: 6px;
   font-weight: 500;
   opacity: 0.9;
 }
 
-.signin-box select,
-.signin-box input {
+.signin-box input,
+.signin-box select {
   width: 100%;
-  padding: 12px;
+  padding: 12px 14px;
   border-radius: 10px;
   border: none;
   font-size: 1rem;
@@ -34,10 +34,21 @@
   outline: none;
 }
 
+/* Button spacing */
+.signin-box .cranium-button {
+  margin-top: 18px;
+  width: 100%;
+}
+
+/* Error */
 .error {
   min-height: 1.2em;
   margin-top: 10px;
-  color: #ffb3b3;
   font-size: 0.95rem;
-  text-align: left;
+}
+
+/* Responsive heading */
+.signin-box h1 {
+  font-size: clamp(1.6rem, 5vw, 2.2rem);
+  margin-bottom: 12px;
 }

@@ -7,38 +7,51 @@
 
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/buttons.css">
+  <link rel="stylesheet" href="css/signin.css">
 </head>
 
-<body class="page">
+<body class="page signin-page">
 
   <main class="center-screen">
-    <section class="glass-panel fade-in">
+
+    <section class="glass-panel signin-box fade-in">
 
       <header class="app-header">
         <h1>Who is taking the quiz?</h1>
       </header>
 
-      <label for="classSelect">Class</label>
-      <select id="classSelect">
-        <option value="">-- Select class --</option>
-        <option value="Form 6">Form 6</option>
-        <option value="Form 7">Form 7</option>
-        <option value="Form 8">Form 8</option>
-        <option value="Visitor">Visitor</option>
-      </select>
+      <form id="signinForm" autocomplete="off">
 
-      <label for="nameInput">Name</label>
-      <input id="nameInput" type="text" placeholder="Your name" />
+        <div class="field">
+          <label for="classSelect">Class</label>
+          <select id="classSelect" required>
+            <option value="">-- Select class --</option>
+            <option value="Form 6">Form 6</option>
+            <option value="Form 7">Form 7</option>
+            <option value="Form 8">Form 8</option>
+            <option value="Visitor">Visitor</option>
+          </select>
+        </div>
 
-      <div id="errorMsg"></div>
+        <div class="field">
+          <label for="nameInput">Name</label>
+          <input type="text" id="nameInput" placeholder="Your name" required />
+        </div>
 
-      <button id="continueBtn" class="cranium-button">Continue</button>
+        <button type="submit" class="cranium-button" id="continueBtn">
+          Continue
+        </button>
+
+        <p id="errorMsg" class="error"></p>
+
+      </form>
 
       <footer class="app-footer">
         <p>Good luck!</p>
       </footer>
 
     </section>
+
   </main>
 
   <script src="js/transitions.js"></script>
