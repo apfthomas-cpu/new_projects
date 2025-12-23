@@ -1,153 +1,204 @@
+// ===============================
+// Firebase imports
+// ===============================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
-  getFirestore, collection, getDocs, query, where, orderBy
+  getFirestore,
+  collection,
+  getDocs,
+  query,
+  where
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* 🔥 Firebase config — SAME as admin.js */
+// 🔥 Your Firebase config
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "cranium-gymnasium.firebaseapp.com",
-  projectId: "cranium-gymnasium",
+  projectId: "cranium-gymnasium"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-/* Elements */
-const wrapper = document.getElementById("scroll-wrapper");
-const textBox = document.getElementById("scroll-text");
+// ===============================
+// DOM
+// ===============================
+const scrollContent = document.getElementById("scrollContent");
+const scrollTitle = document.getElementById("scrollTitle");
 const scoreEl = document.getElementById("score");
-const statusEl = document.getElementById("status");
 
-/* End overlay */
-const endOverlay = document.getElementById("end-overlay");
-const continueBtn = document.getElementById("continue-btn");
+// End overlay (created here if not in HTML)
+let endOverlay = document.createElement("div");
+endOverlay.id = "end-overlay";
+endOverlay.style.cssText = `
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+`;
+endOverlay.innerHTML = `
+  <div style="
+    background: rgba(255,255,255,0.95);
+    padding: 40px;
+    border-radius: 24px;
+    text-align: center;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+  ">
+    <h2>SECTION COMPLETE</h2>
+    <button id="continueBtn" style="
+      margin-top: 20px;
+      padding: 12px 28px;
+      border-radius: 14px;
+      border: none;
+      background: linear-gradient(#9aa5b1,#6f7882);
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+    ">Continue to next section</button>
+  </div>
+`;
+document.body.appendChild(endOverlay);
 
-/* State */
+document.getElementById("continueBtn").onclick = () => {
+  // 🔁 Change later when next section exists
+  window.location.href = "index.html";
+};
+
+// ===============================
+// State
+// ===============================
 let position = 0;
+let speed = 20;
+let targetSpeed = 20;
+let boost = 6;
 let lastTime = performance.now();
-let baseSpeed = 12;
-let boostSpeed = 6;
-let speed = baseSpeed;
 let score = 0;
 let ended = false;
+let mistakes = [];
 
-/* ============================================================
-   Load active scroll section from Firestore
-   ============================================================ */
+// Common mistake forms we will treat as “correct”
+const COMMON_MISTAKES = [
+  "familys", "reign", "hapy", "could of", "should of", "would of",
+  "their", "there", "our", "are", "cleer", "alberts",
+  "acheive", "definately", "wich", "recieve", "seperate",
+  "enviroment", "goverment", "arguement"
+];
+
+// ===============================
+// Helpers
+// ===============================
+function wrapWords(text) {
+  return text
+    .split(/\s+/)
+    .map(w => `<span class="word">${w}</span>`)
+    .join(" ");
+}
+
+function extractMistakes(text) {
+  const words = text.toLowerCase().split(/\s+/);
+  return words.filter(w =>
+    COMMON_MISTAKES.includes(w.replace(/[^\w']/g, ""))
+  );
+}
+
+function enableClicks() {
+  document.querySelectorAll(".word").forEach(span => {
+    span.addEventListener("click", () => {
+      if (ended) return;
+
+      if (span.classList.contains("clicked")) return;
+      span.classList.add("clicked");
+      span.style.fontWeight = "700";
+      span.style.color = "#000";
+
+      const word = span.innerText.toLowerCase().replace(/[^\w']/g, "");
+
+      if (mistakes.includes(word)) {
+        score++;
+        targetSpeed += boost;
+        scoreEl.textContent = `Score: ${score}`;
+      }
+      // ❌ incorrect → still bold, no penalty, no boost
+    });
+  });
+}
+
+// ===============================
+// Firebase load (random)
+// ===============================
 async function loadSection() {
   try {
     const q = query(
       collection(db, "sections"),
       where("type", "==", "scroll"),
-      where("active", "==", true),
-      orderBy("order")
+      where("active", "==", true)
     );
 
     const snap = await getDocs(q);
-
     if (snap.empty) throw new Error("No active scroll sections.");
 
-    const data = snap.docs[0].data();
-    baseSpeed = data.baseSpeed || 12;
-    boostSpeed = data.boost || 6;
-    speed = baseSpeed;
+    const docs = snap.docs;
+    const randomDoc = docs[Math.floor(Math.random() * docs.length)];
+    const section = randomDoc.data();
 
-    buildText(data.text);
-    statusEl.textContent = "Loaded from Firebase";
+    scrollTitle.textContent = section.title || "Scrolling Exercise";
+    speed = section.baseSpeed || 20;
+    targetSpeed = speed;
+    boost = section.boost || 6;
 
-    startScroll();
+    scrollContent.innerHTML = wrapWords(section.text);
+    mistakes = extractMistakes(section.text);
+
+    enableClicks();
+
+    const wrapper = scrollContent.parentElement;
+    position = wrapper.offsetHeight;
+    scrollContent.style.top = position + "px";
+
   } catch (err) {
-    console.error(err);
-    statusEl.textContent = "Demo Scroll (Firebase failed)";
-    buildText(
-      "This is a fallback passage so the scroll still works. Click the word mistake to test scoring and speed. Everything else should be marked incorrect."
-    );
-    startScroll();
+    console.error("Firebase failed:", err);
+    scrollTitle.textContent = "Demo Scroll (Firebase failed)";
+
+    const demo =
+      "This is a fallback passage with a mistake to test scoring. Click mistake to gain speed.";
+
+    scrollContent.innerHTML = wrapWords(demo);
+    mistakes = ["mistake"];
+    enableClicks();
+
+    const wrapper = scrollContent.parentElement;
+    position = wrapper.offsetHeight;
+    scrollContent.style.top = position + "px";
   }
 }
 
-/* ============================================================
-   Build clickable words
-   ============================================================ */
-function buildText(text) {
-  textBox.innerHTML = "";
-
-  text.split(/\s+/).forEach(word => {
-    const span = document.createElement("span");
-    span.className = "word";
-    span.textContent = word + " ";
-    span.addEventListener("click", () => onWordClick(span));
-    textBox.appendChild(span);
-  });
-}
-
-/* ============================================================
-   Click logic
-   ============================================================ */
-function onWordClick(span) {
-  if (ended || span.classList.contains("clicked")) return;
-
-  span.classList.add("clicked");
-  span.style.fontWeight = "700";
-  span.style.color = "#000";
-
-  if (span.textContent.toLowerCase().includes("@") ||
-      span.textContent.includes("0") ||
-      span.textContent.match(/zz|ee/)) {
-    // correct mistake
-    score++;
-    speed += boostSpeed;
-    scoreEl.textContent = score;
-  }
-  // wrong clicks just bold — no penalty, no boost
-}
-
-/* ============================================================
-   Start scrolling
-   ============================================================ */
-function startScroll() {
-  wrapper.style.display = "block";
-  position = wrapper.clientHeight * 0.9;
-  textBox.style.top = position + "px";
-
-  requestAnimationFrame(scrollLoop);
-}
-
-/* ============================================================
-   Smooth scroll loop (top-based)
-   ============================================================ */
+// ===============================
+// Scroll loop
+// ===============================
 function scrollLoop(t) {
-  if (ended) return;
-
   const delta = (t - lastTime) / 1000;
   lastTime = t;
 
-  position -= speed * delta;
-  textBox.style.top = position + "px";
+  if (!ended) {
+    speed += (targetSpeed - speed) * 0.05;
+    position -= speed * delta;
+    scrollContent.style.top = position + "px";
 
-  if (position + textBox.offsetHeight <= 0) {
-    finish();
-    return;
+    const h = scrollContent.offsetHeight;
+    if (position + h < 0) {
+      ended = true;
+      endOverlay.style.display = "flex";
+    }
   }
 
   requestAnimationFrame(scrollLoop);
 }
 
-/* ============================================================
-   Finish
-   ============================================================ */
-function finish() {
-  ended = true;
-  endOverlay.style.display = "flex";
-}
-
-continueBtn.addEventListener("click", () => {
-  // link later
-  alert("Next section coming soon!");
-});
-
-/* ============================================================
-   Init
-   ============================================================ */
+// ===============================
+// Init
+// ===============================
 loadSection();
+requestAnimationFrame(scrollLoop);
