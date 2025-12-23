@@ -1,28 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Scrolling Exercise</title>
+
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/buttons.css">
   <link rel="stylesheet" href="css/scroll.css">
 </head>
-<body>
 
-<div id="scroll-wrapper">
-  <div id="scroll-text"></div>
-</div>
+<body class="scroll-page">
+  <main class="center-screen">
+    
+    <section id="intro" class="glass-box scroll-intro">
+      <h1>Scrolling Exercise</h1>
+      <p class="instructions">
+        In this section, you will need to read a text that scrolls continuously upwards and to click on the mistakes that you find. The more mistakes you identify, the faster the text will scroll.
+      </p>
+      <button id="startBtn" class="cranium-button">Start</button>
+    </section>
 
-<div id="launch-overlay" class="glass-box">
-  <h1>Scrolling Exercise</h1>
-  <button class="cranium-button" id="start-btn">Start</button>
-</div>
+    <!-- Scrolling exercise stage -->
+    <section id="exercise" class="scroll-stage hidden">
+      <div id="scrollText">
+        <!-- Your scrolling text goes here -->
+        <p>
+          This is where your scrolling text will appear. Replace this with your exercise content.
+        </p>
+      </div>
+    </section>
 
-<div id="end-overlay" class="glass-box">
-  <h1>END</h1>
-  <button class="cranium-button" id="continue-btn">Continue</button>
-</div>
+  </main>
 
-<script src="js/scroll.js"></script>
+  <script src="js/scroll.js"></script>
 </body>
 </html>

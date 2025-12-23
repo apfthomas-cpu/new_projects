@@ -1,33 +1,54 @@
-#scroll-wrapper {
-  display: none;
-  position: absolute;
-  inset: 5vh 5vw;
-  background: var(--glass-bg);
-  backdrop-filter: var(--blur);
-  border-radius: var(--radius);
-  overflow: hidden;
+/* Page base */
+.scroll-page {
+  min-height: 100vh;
 }
 
-#scroll-text {
-  position: absolute;
-  padding: 30px;
-  font-size: 20px;
-  line-height: 1.6;
+/* Intro panel */
+.scroll-intro {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto;
 }
 
-.word {
-  cursor: pointer;
+/* Title */
+.scroll-intro h1 {
+  font-family: "Montserrat", sans-serif;
+  margin-bottom: 14px;
 }
 
-.correct { font-weight: 700; }
-.incorrect { opacity: 0.4; }
+/* Instructions text */
+.scroll-intro .instructions {
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(1rem, 2.5vw, 1.1rem);
+  line-height: 1.5;
+  margin: 0 0 22px;
+  opacity: 0.9;
+}
 
-#launch-overlay,
-#end-overlay {
+/* Exercise stage */
+.scroll-stage {
   position: fixed;
   inset: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  overflow: hidden;
+  padding: 40px 20px;
+  color: #fff;
+  font-family: "Poppins", sans-serif;
 }
-#end-overlay { display: none; }
+
+/* Scrolling text box */
+#scrollText {
+  position: absolute;
+  bottom: -100%;
+  width: 100%;
+  max-width: 800px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: left;
+  line-height: 1.6;
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+}
+
+/* Utility */
+.hidden {
+  display: none;
+}
