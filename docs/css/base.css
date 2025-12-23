@@ -17,8 +17,11 @@ body.page {
   min-height: 100vh;
   width: 100%;
   font-family: "Poppins", system-ui, sans-serif;
-  background: linear-gradient(180deg, #3f4f54 0%, #8aa0a8 50%, #5c6ea8 100%);
   color: #111;
+
+  /* Background image */
+  background: url("../media/Background.jpg") no-repeat center center fixed;
+  background-size: cover;
 }
 
 /* ===== App wrapper fills viewport ===== */
