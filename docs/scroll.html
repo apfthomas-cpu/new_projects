@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Scrolling Exercise</title>
 
   <link rel="stylesheet" href="css/base.css">
@@ -10,49 +10,24 @@
   <link rel="stylesheet" href="css/scroll.css">
 </head>
 
-<body class="page">
+<body class="page scroll-page">
 
   <main class="center-screen">
 
-    <!-- Intro -->
-    <section id="intro" class="glass-panel fade-in scroll-intro">
-      <header class="app-header">
-        <h1>Scrolling Exercise</h1>
-      </header>
+    <section id="introPanel" class="glass-panel intro-box fade-in">
+      <h1>Scrolling Exercise</h1>
 
       <p class="instructions">
-        In this section, you will need to read a text that scrolls continuously upwards and to click on the mistakes that you find. The more mistakes you identify, the faster the text will scroll.
+        In this section, you will need to read a text that scrolls continuously upwards and to click on the mistakes that you find.
+        The more mistakes you identify, the faster the text will scroll.
       </p>
 
       <button id="startBtn" class="cranium-button">Start</button>
-
-      <footer class="app-footer">
-        <p>Read carefully and be quick!</p>
-      </footer>
     </section>
 
-    <!-- Exercise -->
-    <section id="exercise" class="scroll-stage hidden">
-      <div id="scroll-wrapper" class="fade-in">
-        <div id="scrollText">
-
-<p>Apples iStore are instantly recognizable. Its architecture are sleek, minimalist, and almost museum-like. The walls are wite, the tables are wooden, and the devices are displayed with presision. This design reflects Apple’s marketing strategy: simplicity, eligance, and exclusivity. The store itself is part of the brand’s storytelling, reinforcing the idea that Apple products are not just tools but lifestyle choices.</p>
-
-<p>Samsung’s flogship store, by contrast, is vibrant and interactive. Known as Samsung KX, it is designed less like a shop and more like a tecnology playground. Visitors can explore zones dedicated to virtual reality, smart kitchens, and even creative workshops. The atmosphere is energetic, colorful, and dynamic, reflecting Samsung’s marketing approach: technology as an everyday companion, accessible and versatile.</p>
-
-<p>Apple’s marketing rely heavily on emotional branding. There advertisements often show familys connecting, students creating, or professionals acheiving success. The message is subtle but powerful: owning Apple products makes life smoother, more creative, and more meaningful. This emotional appeal is reinforced in the store, where the environment feels calm and aspirational.</p>
-
-<p>Samsungs marketing, on the other hand, emphasizes practicality and variety. Their campaigns highlight how devices integrate into daily life—phones that connect to smart fridges, tablets that help with work, and TVs that transform living rooms. The flagship store mirrors this approach by offering demonstrations and workshops that show technology in action. The message is clear: Samsung wants to prove that its products are useful in every corner of life.</p>
-
-<p>Yet both approaches fice challenges. Apple’s iStore sometimes feels intimidating. The polished environment can make customers hesitant to ask questions, and the high prices reinforce the sense of exclusivity. Moreover, Apple’s constant cycle of new product releases encourages frequent upgrades, raising concerns about sustainability and electronic waste.</p>
-
-<p>The differences can be summarized as tone. Apple’s markting is like a whisper—calm, elegant, persuasive. Samsung’s marketing is like a shout—energetic, colorful, and full of action.</p>
-
-<p>The practical issues remain importants. Apple’s upgrade culture raises questions about environmental responsibility.</p>
-
-<p>Ultimitely, Apple wins in loyalty. Customers often line up overnight for new iPhones.</p>
-
-        </div>
+    <section id="scrollPanel" class="scroll-panel hidden">
+      <div id="scrollViewport">
+        <div id="scrollContent"></div>
       </div>
     </section>
 

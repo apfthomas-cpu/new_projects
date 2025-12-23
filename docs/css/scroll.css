@@ -3,20 +3,19 @@
 }
 
 /* Intro */
-.scroll-intro {
+.intro-box {
+  width: min(92vw, 720px);
   text-align: center;
-  max-width: 720px;
-  margin: 0 auto;
 }
 
-.scroll-intro .instructions {
-  font-size: clamp(1.05rem, 3.8vw, 1.25rem);
-  line-height: 1.6;
-  opacity: 0.95;
+.instructions {
+  font-size: clamp(1rem, 3.8vw, 1.25rem);
+  line-height: 1.5;
+  margin: 14px 0 22px;
 }
 
-/* Exercise stage */
-.scroll-stage {
+/* Scroll panel */
+.scroll-panel {
   position: fixed;
   inset: 0;
   display: flex;
@@ -24,38 +23,31 @@
   align-items: center;
 }
 
-/* Glass scroll box */
-#scroll-wrapper {
-  position: relative;
-  width: 90vw;
-  height: 90vh;
-  background: rgba(255,255,255,0.75);
-  backdrop-filter: blur(12px);
-  border-radius: 26px;
-  box-shadow: 0 12px 35px rgba(0,0,0,0.28);
-  padding: clamp(14px, 3vw, 28px);
-  overflow: hidden;
+.scroll-panel.hidden {
+  display: none;
 }
 
-/* Scrolling text */
-#scrollText {
+#scrollViewport {
+  width: min(92vw, 900px);
+  height: 70svh;
+  overflow: hidden;
+  position: relative;
+}
+
+#scrollContent {
   position: absolute;
   left: 0;
-  right: 0;
-  padding: clamp(20px, 3vw, 40px);
-  font-size: clamp(1.05rem, 3.8vw, 1.35rem);
-  line-height: 1.65;
-  color: #000;
-  font-family: "Poppins", sans-serif;
+  width: 100%;
+  line-height: 1.6;
+  font-size: clamp(1.1rem, 4vw, 1.5rem);
+  cursor: pointer;
 }
 
-/* Clickable words */
+/* Word styling */
 .word {
   cursor: pointer;
-  margin-right: 0.25rem;
 }
 
-/* Found mistakes → bold only */
-.found {
+.word.clicked {
   font-weight: 700;
 }

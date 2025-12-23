@@ -1,76 +1,95 @@
 const startBtn = document.getElementById("startBtn");
-const intro = document.getElementById("intro");
-const exercise = document.getElementById("exercise");
-const scrollText = document.getElementById("scrollText");
-const wrapper = document.getElementById("scroll-wrapper");
+const introPanel = document.getElementById("introPanel");
+const scrollPanel = document.getElementById("scrollPanel");
+const scrollContent = document.getElementById("scrollContent");
+const viewport = document.getElementById("scrollViewport");
 
-/* Mistakes list */
+// === TEXT WITH MISTAKES ===
+// Wrap mistakes in * * so we can mark them
+const rawText = `
+This is an example of a scrolling text where some words are incorret and
+others are absolutly fine. The purpos of this excercise is to identifie
+mistakes while the paragraf continues to move upwards across the screen.
+Clicking on any word will make it bold, but only the wrong ones increase
+the speeed of the scrolling text.
+`;
+
+// === CONFIG (¼ faster) ===
+let baseSpeed = 0.3 * 1.25;      // was 0.3 → now +25%
+let speed = baseSpeed;
+let speedBoost = 0.12 * 1.25;   // was 0.12 → now +25%
+
+let y = 0;
+let lastTime = null;
+
+// Mistakes list must match wrong words in text
 const mistakes = [
-  "Apples","are","are","wite","eligance","presision","tecnology",
-  "familys","acheiving","rely","There","flogship","Samsungs",
-  "fice","markting","importants","Ultimitely"
+  "incorret",
+  "absolutly",
+  "purpos",
+  "excercise",
+  "identifie",
+  "paragraf",
+  "speeed"
 ];
 
-let position = 0;
-let lastTime = performance.now();
+// === Build content ===
+function buildContent() {
+  const words = rawText.split(/\s+/);
 
-/* 🔽 HALVED SPEED SETTINGS */
-let pixelsPerSecond = 6.25;   // was ~12.5
-let targetSpeed = 6.25;       // was ~12.5
-const speedBoost = 3;        // was ~6
+  scrollContent.innerHTML = words.map(w => {
+    const clean = w.replace(/[^\w]/g, "");
+    const isMistake = mistakes.includes(clean);
+    return `<span class="word${isMistake ? " mistake" : ""}" data-word="${clean}">${w}</span> `;
+  }).join("");
 
-let running = false;
-
-/* Wrap words */
-function prepareWords() {
-  scrollText.querySelectorAll("p").forEach(p => {
-    p.innerHTML = p.innerText
-      .split(" ")
-      .map(w => `<span class="word">${w}</span>`)
-      .join(" ");
-  });
-
-  document.querySelectorAll(".word").forEach(span => {
-    span.addEventListener("click", () => handleWordClick(span));
-  });
+  y = viewport.offsetHeight;
+  scrollContent.style.top = y + "px";
 }
 
-/* Handle clicks → bold + slower boost */
-function handleWordClick(span) {
-  if (!running) return;
+buildContent();
 
-  const clean = span.innerText.replace(/[^\w’']/g, "");
+// === Click handling ===
+scrollContent.addEventListener("click", (e) => {
+  if (!e.target.classList.contains("word")) return;
 
-  if (mistakes.includes(clean)) {
-    if (!span.classList.contains("found")) {
-      span.classList.add("found");
-      targetSpeed += speedBoost; // 🔼 slower increase
-    }
+  const span = e.target;
+  if (span.classList.contains("clicked")) return;
+
+  span.classList.add("clicked");
+
+  if (span.classList.contains("mistake")) {
+    speed += speedBoost;
   }
-}
-
-/* Start */
-startBtn.addEventListener("click", () => {
-  intro.classList.add("hidden");
-  exercise.classList.remove("hidden");
-  prepareWords();
-  running = true;
-
-  position = wrapper.clientHeight * 0.5;
-  scrollText.style.top = position + "px";
 });
 
-/* Smooth scroll loop */
-function scrollLoop(t) {
-  const delta = (t - lastTime) / 1000;
-  lastTime = t;
+// === Smooth scrolling loop ===
+function animate(time) {
+  if (!lastTime) lastTime = time;
+  const delta = (time - lastTime) / 16.67; // normalize to ~60fps
+  lastTime = time;
 
-  if (running) {
-    pixelsPerSecond += (targetSpeed - pixelsPerSecond) * 0.04;
-    position -= pixelsPerSecond * delta;
-    scrollText.style.top = position + "px";
+  y -= speed * delta;
+  scrollContent.style.top = y + "px";
+
+  if (y + scrollContent.offsetHeight < 0) {
+    y = viewport.offsetHeight;
+    speed = baseSpeed;
+    lastTime = null;
+    document.querySelectorAll(".word").forEach(w => w.classList.remove("clicked"));
   }
 
-  requestAnimationFrame(scrollLoop);
+  requestAnimationFrame(animate);
 }
-requestAnimationFrame(scrollLoop);
+
+// === Start ===
+startBtn.addEventListener("click", () => {
+  introPanel.classList.remove("fade-in");
+  introPanel.classList.add("fade-out");
+
+  setTimeout(() => {
+    introPanel.style.display = "none";
+    scrollPanel.classList.remove("hidden");
+    requestAnimationFrame(animate);
+  }, 400);
+});
