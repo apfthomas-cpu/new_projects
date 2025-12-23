@@ -12,7 +12,7 @@ import {
 
 // 🔥 Your Firebase config
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
+  apiKey: "AIzaSyCgjZv-a6t23QqELDSrY8402hZcY_N_Ors",
   authDomain: "cranium-gymnasium.firebaseapp.com",
   projectId: "cranium-gymnasium"
 };

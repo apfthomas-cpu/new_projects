@@ -1,11 +1,16 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
-  getFirestore, collection, addDoc, getDocs, deleteDoc, doc
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* 🔥 FIREBASE CONFIG */
+/* 🔥 Firebase config */
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
+  apiKey: "AIzaSyCgjZv-a6t23QqELDSrY8402hZcY_N_Ors",
   authDomain: "cranium-gymnasium.firebaseapp.com",
   projectId: "cranium-gymnasium",
 };
@@ -13,7 +18,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-/* Elements */
+/* ===============================
+   Elements
+================================ */
 const titleInput = document.getElementById("titleInput");
 const scrollTextArea = document.getElementById("scrollText");
 const baseSpeedInput = document.getElementById("baseSpeed");
@@ -25,10 +32,13 @@ const resetBtn = document.getElementById("resetBtn");
 const sectionsList = document.getElementById("sectionsList");
 const makeMistakeBtn = document.getElementById("makeMistakeBtn");
 
-/* Tabs */
+/* ===============================
+   Tabs
+================================ */
 document.querySelectorAll(".tab").forEach(tab => {
   tab.addEventListener("click", () => {
-    document.querySelectorAll(".tab, .tab-content").forEach(el => el.classList.remove("active"));
+    document.querySelectorAll(".tab, .tab-content")
+      .forEach(el => el.classList.remove("active"));
     tab.classList.add("active");
     document.getElementById(tab.dataset.tab).classList.add("active");
   });
@@ -36,7 +46,7 @@ document.querySelectorAll(".tab").forEach(tab => {
 
 /* =========================================================
    SMART MISTAKE GENERATOR
-   ========================================================= */
+========================================================= */
 
 const confusionMap = {
   families: ["familys"],
@@ -46,7 +56,6 @@ const confusionMap = {
   reign: ["rain"],
 
   happy: ["hapy"],
-
   clear: ["cleer"],
   friend: ["freind"],
 
@@ -128,7 +137,7 @@ function generateMistake(word) {
 
 /* =========================================================
    Create mistake from selection
-   ========================================================= */
+========================================================= */
 
 makeMistakeBtn.addEventListener("click", () => {
   const start = scrollTextArea.selectionStart;
@@ -148,12 +157,13 @@ makeMistakeBtn.addEventListener("click", () => {
   }
 
   const mistake = generateMistake(selected);
-  scrollTextArea.value = text.slice(0, start) + mistake + text.slice(end);
+  scrollTextArea.value =
+    text.slice(0, start) + mistake + text.slice(end);
 });
 
 /* =========================================================
    Save section
-   ========================================================= */
+========================================================= */
 
 saveBtn.addEventListener("click", async () => {
   if (!titleInput.value || !scrollTextArea.value) {
@@ -165,9 +175,9 @@ saveBtn.addEventListener("click", async () => {
     type: "scroll",
     title: titleInput.value,
     text: scrollTextArea.value,
-    baseSpeed: Number(baseSpeedInput.value),
-    boost: Number(boostSpeedInput.value),
-    order: Number(orderInput.value),
+    baseSpeed: Number(baseSpeedInput.value || 20),
+    boost: Number(boostSpeedInput.value || 6),
+    order: Number(orderInput.value || 1),
     active: activeInput.value === "true",
     created: Date.now()
   });
@@ -177,6 +187,8 @@ saveBtn.addEventListener("click", async () => {
 });
 
 /* Reset */
+resetBtn.addEventListener("click", resetForm);
+
 function resetForm() {
   titleInput.value = "";
   scrollTextArea.value = "";
@@ -184,7 +196,7 @@ function resetForm() {
 
 /* =========================================================
    Load sections list
-   ========================================================= */
+========================================================= */
 
 async function loadSections() {
   sectionsList.innerHTML = "";
@@ -199,7 +211,7 @@ async function loadSections() {
     div.innerHTML = `
       <strong>${d.title}</strong><br>
       Active: ${d.active ? "Yes" : "No"}<br>
-      <button data-id="${docSnap.id}">Delete</button>
+      <button>Delete</button>
     `;
 
     div.querySelector("button").onclick = async () => {
@@ -211,4 +223,5 @@ async function loadSections() {
   });
 }
 
+/* Init */
 loadSections();
