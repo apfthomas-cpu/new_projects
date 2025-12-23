@@ -1,57 +1,98 @@
-/* ===== Scroll page layout ===== */
+/* docs/css/scroll.css */
 
-.scroll-panel {
-  width: 100%;
-  max-width: 90vw;
+.scroll-shell {
+  width: 90vw;
+  height: 90vh;
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 26px;
+  box-shadow: 0 12px 35px rgba(0,0,0,0.28);
+  padding: clamp(14px, 3vw, 28px);
+  overflow: hidden;
+
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: clamp(10px, 2vw, 16px);
 }
 
-/* Header */
 .scroll-header h1 {
-  margin-bottom: 0.2em;
+  margin: 0;
+  text-align: center;
+  font-size: clamp(26px, 4vw, 42px);
 }
 
 .scroll-header .subtitle {
-  margin: 0;
+  margin: 4px 0 0;
+  text-align: center;
+  font-size: clamp(14px, 2vw, 18px);
 }
 
-/* Scroll area wrapper */
-.scroll-wrapper {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* The visible window */
+/* Scroll window fills remaining space */
 .scroll-window {
   position: relative;
-  width: 100%;
-  max-width: 100%;
-  height: 50vh;              /* visible box height */
-  overflow: hidden;         /* hide overflowing text */
-  border-radius: 16px;
-  background: rgba(255,255,255,0.75);
-  padding: 24px;
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.15);
+  flex: 1;
+  overflow: hidden;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.55);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
 }
 
-/* The moving text */
+/* The moving element */
 .scroll-content {
   position: absolute;
-  width: 100%;
   left: 0;
-  top: 100%;                /* start below the window */
-  font-size: clamp(1rem, 1.4vw, 1.2rem);
+  right: 0;
+  top: 0;
+
+  padding-left: clamp(20px, 3vw, 40px);
+  padding-right: clamp(20px, 3vw, 40px);
+  padding-top: clamp(10px, 2vw, 20px);
+  padding-bottom: clamp(10px, 2vw, 20px);
+
+  box-sizing: border-box;
+  font-size: clamp(17px, 2.2vw, 22px);
   line-height: 1.6;
-  text-align: left;
+  color: #111;
 }
 
-/* Footer */
+/* Words */
+.word {
+  margin-right: 0.25rem;
+  cursor: pointer;
+}
+
+.word.correct {
+  font-weight: 700;
+  color: #000;
+}
+
+.word.incorrect {
+  font-weight: 700;
+  color: #b10000;
+}
+
 .scroll-footer {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  font-weight: 600;
+  gap: 12px;
+
+  font-size: clamp(12px, 1.6vw, 16px);
+  color: #111;
+}
+
+.scroll-error {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #b10000;
+  min-height: 18px;
+}
+
+/* Mobile tweaks */
+@media (max-width: 768px) {
+  .scroll-shell {
+    width: 94vw;
+    height: 90vh;
+  }
 }
