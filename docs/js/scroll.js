@@ -1,43 +1,148 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const content = document.getElementById("scrollContent");
-  const titleEl = document.getElementById("scrollTitle");
-  const scoreEl = document.getElementById("score");
+// docs/js/scroll.js
 
-  // Example fallback text (until Firestore wired in)
-  const scrollData = {
-    title: "The Silent Takeover",
-    text: `Imagine this: it’s 2045. Your AI-powered home assistant, “Nexus,” wakes you with gentle light and the scent of fresh reign. It has already analysed your sleep patterns, ordered groceries based on your fridges contents, and summarised your schoolwork.
+import { db } from "./firebase.js";
+import { collection, getDocs, query, where } 
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-Your breakfast, prepared by a robotic chef, is perfectly nutritious. A self-driving pod whisks you to school, while drone cleaners buzz around your home. Your social life is curated by algorithms suggesting friends and activities.
+// =======================
+// DOM elements
+// =======================
+const scrollContent = document.getElementById("scrollContent");
+const scrollWindow  = document.querySelector(".scroll-window");
+const scoreEl       = document.getElementById("score");
+const titleEl       = document.getElementById("scrollTitle");
 
-Every task, every potential hassle, is managed by silent, efficient machines. It sounds like a utopia, doesn’t it? But beneath this seamless surface, a quiet revolution is occurring.`,
-    baseSpeed: 30
-  };
+// =======================
+// State
+// =======================
+let mistakes = [];
+let score = 0;
 
-  // Inject content
-  titleEl.textContent = scrollData.title;
-  content.innerText = scrollData.text;
-  scoreEl.textContent = "Score: 0";
+let position = 0;
+let lastTime = performance.now();
 
-  const scrollWindow = document.querySelector(".scroll-window");
+let pixelsPerSecond = 14;
+let targetSpeed     = 14;
+let boostSpeed      = 6;
 
-  let position = scrollWindow.offsetHeight; // start below window
-  let speed = scrollData.baseSpeed / 100;   // convert to px per frame-ish
+let started = false;
+let ended   = false;
 
-  function animate() {
-    position -= speed;
-    content.style.top = position + "px";
+// =======================
+// Load from Firestore
+// =======================
+async function loadScrollFromFirebase() {
+  try {
+    const q = query(
+      collection(db, "scroll_sections"),
+      where("active", "==", true)
+    );
 
-    // Stop when text fully leaves the window
-    if (position + content.offsetHeight > 0) {
-      requestAnimationFrame(animate);
+    const snapshot = await getDocs(q);
+    const docs = snapshot.docs.map(d => d.data());
+
+    if (!docs.length) throw new Error("No active scroll sections found");
+
+    // Pick one at random
+    const chosen = docs[Math.floor(Math.random() * docs.length)];
+
+    titleEl.textContent = chosen.title || "Scrolling Exercise";
+    scrollContent.innerHTML = chosen.text || "";
+    mistakes = chosen.mistakes || [];
+    pixelsPerSecond = chosen.baseSpeed || 14;
+    targetSpeed     = pixelsPerSecond;
+    boostSpeed      = chosen.boostSpeed || 6;
+
+    prepareWords();
+    startScroll();
+
+  } catch (err) {
+    console.error("Firebase load failed:", err);
+
+    // Fallback demo text
+    titleEl.textContent = "Demo Text";
+    scrollContent.innerHTML = `
+      <p>This is a demo scrolling passage with a mistake in the text to click.</p>
+      <p>The exercise will still scroll even if Firebase fails to load.</p>
+    `;
+    mistakes = ["mistake"];
+    prepareWords();
+    startScroll();
+  }
+}
+
+// =======================
+// Prepare clickable words
+// =======================
+function prepareWords() {
+  scrollContent.querySelectorAll("p").forEach(p => {
+    p.innerHTML = p.innerText
+      .split(" ")
+      .map(w => `<span class="word">${w}</span>`)
+      .join(" ");
+  });
+
+  document.querySelectorAll(".word").forEach(span => {
+    span.addEventListener("click", () => {
+      if (!started || ended) return;
+
+      const clean = span.innerText.replace(/[^\w’']/g, "");
+
+      if (mistakes.includes(clean)) {
+        if (!span.classList.contains("correct")) {
+          span.classList.add("correct");
+          score++;
+          scoreEl.textContent = `Score: ${score}`;
+
+          // Speed boost
+          targetSpeed += boostSpeed;
+        }
+      } else {
+        span.classList.add("incorrect");
+      }
+    });
+  });
+}
+
+// =======================
+// Start scroll
+// =======================
+function startScroll() {
+  requestAnimationFrame(() => {
+    position = scrollWindow.clientHeight;
+    scrollContent.style.top = position + "px";
+    started = true;
+  });
+}
+
+// =======================
+// Scroll loop (smooth)
+// =======================
+function scrollLoop(time) {
+  const delta = (time - lastTime) / 1000;
+  lastTime = time;
+
+  if (started && !ended) {
+    // Smooth acceleration
+    pixelsPerSecond += (targetSpeed - pixelsPerSecond) * 0.05;
+
+    position -= pixelsPerSecond * delta;
+    scrollContent.style.top = position + "px";
+
+    // End detection
+    if (position + scrollContent.offsetHeight <= 0) {
+      ended = true;
+      console.log("End reached");
     }
   }
 
-  // Wait a tick so layout is ready
-  setTimeout(() => {
-    position = scrollWindow.offsetHeight;
-    content.style.top = position + "px";
-    animate();
-  }, 100);
+  requestAnimationFrame(scrollLoop);
+}
+
+// =======================
+// Init
+// =======================
+window.addEventListener("load", () => {
+  loadScrollFromFirebase();
+  requestAnimationFrame(scrollLoop);
 });
