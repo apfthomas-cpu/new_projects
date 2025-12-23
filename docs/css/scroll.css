@@ -1,11 +1,4 @@
-.scroll-panel {
-  width: 100%;
-}
-
-.scroll-wrapper {
-  margin-top: 20px;
-}
-
+/* Scroll window */
 .scroll-window {
   position: relative;
   height: 60vh;
@@ -16,7 +9,7 @@
   box-shadow: inset 0 4px 10px rgba(0,0,0,0.08);
 }
 
-/* Content takes 90% width of box */
+/* Content uses 90% width */
 .scroll-content {
   position: absolute;
   top: 0;
@@ -24,22 +17,26 @@
   width: 90%;
   font-size: clamp(17px, 2.2vw, 21px);
   line-height: 1.6;
+  color: #111;
 }
 
+/* Words */
 .word {
   margin-right: 0.25rem;
   cursor: pointer;
+  user-select: none;
 }
 
+/* Any clicked word */
+.word.selected {
+  font-weight: 700;
+  color: #000;
+}
+
+/* Correct (same look, but kept for logic hooks if needed) */
 .word.correct {
-  color: black;
   font-weight: 700;
-}
-
-/* Do NOT mark incorrect visually */
-.word.incorrect {
-  color: black;
-  font-weight: 700;
+  color: #000;
 }
 
 /* Footer */
@@ -50,7 +47,7 @@
   font-size: 0.95rem;
 }
 
-/* ===== END OVERLAY ===== */
+/* ===== End Overlay ===== */
 .end-overlay {
   position: fixed;
   inset: 0;

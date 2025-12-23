@@ -6,8 +6,11 @@ const continueBtn = document.getElementById("continueBtn");
 let score = 0;
 let position = 0;
 let lastTime = performance.now();
+
 let pixelsPerSecond = 14;
 let targetSpeed = 14;
+const boostAmount = 5;
+
 let started = false;
 let ended = false;
 
@@ -15,16 +18,18 @@ let ended = false;
 const text = `
 <p>This is a fallback passage so the scroll still works.</p>
 <p>Click the word mistake to test scoring and speed.</p>
-<p>Everything else should be marked incorrect.</p>
+<p>Everything else will still turn bold but not affect speed.</p>
 <p>The text will smoothly scroll upward until complete.</p>
 <p>Try clicking mistake again for speed boost.</p>
 `;
 
+/* Mistakes list */
 const mistakes = ["mistake"];
 
 /* Build content */
 function initText(raw) {
   scrollContent.innerHTML = raw;
+
   scrollContent.querySelectorAll("p").forEach(p => {
     p.innerHTML = p.innerText
       .split(" ")
@@ -36,15 +41,20 @@ function initText(raw) {
     span.addEventListener("click", () => {
       if (!started || ended) return;
 
-      if (mistakes.includes(span.innerText)) {
+      const clean = span.innerText.replace(/[^\w’']/g, "");
+
+      // Always bold when clicked
+      span.classList.add("selected");
+
+      // Only correct words affect score/speed
+      if (mistakes.includes(clean)) {
         if (!span.classList.contains("correct")) {
           span.classList.add("correct");
           score++;
-          targetSpeed += 5;
           scoreEl.textContent = `Score: ${score}`;
+          targetSpeed += boostAmount;
         }
       }
-      // Do nothing for wrong clicks (no red marking)
     });
   });
 
@@ -79,6 +89,6 @@ requestAnimationFrame(scrollLoop);
 
 /* Continue button */
 continueBtn.addEventListener("click", () => {
-  // TODO: change to next section when ready
+  // TODO: link to next section later
   window.location.href = "#";
 });
