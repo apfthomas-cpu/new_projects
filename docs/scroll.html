@@ -1,49 +1,30 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Cranium Gymnasium – Scrolling Challenge</title>
+  <meta charset="UTF-8" />
+  <title>Cranium Gymnasium – Scrolling Exercise</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <link rel="stylesheet" href="css/base.css"/>
-  <link rel="stylesheet" href="css/buttons.css"/>
-  <link rel="stylesheet" href="css/scroll.css"/>
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/scroll.css" />
 </head>
+<body class="scroll-page">
 
-<body class="page">
   <main class="center-screen">
+    <section class="glass-card scroll-card">
 
-    <section id="introPanel" class="glass-panel fade-in">
-      <header class="app-header">
-        <h1 class="brand">Scrolling Challenge</h1>
-        <p class="subtitle">
-          In this section, you will need to read a text that scrolls continuously upwards and to click on the mistakes that you find.
-          The more mistakes you identify, the faster the text will scroll.
-        </p>
-      </header>
-
-      <div class="button-row">
-        <button id="startBtn" class="cranium-button">Start</button>
+      <div id="scrollViewport">
+        <div id="scrollContent"></div>
       </div>
 
-      <footer class="app-footer">🧠 Cranium Gymnasium</footer>
+      <footer class="scroll-footer">
+        <span id="scrollTitle"></span>
+        <span id="score">Score: 0</span>
+      </footer>
+
     </section>
-
-    <section id="scrollPanel" class="scroll-panel hidden">
-      <div class="scroll-frame glass-panel fade-in">
-        <div class="scroll-viewport" id="scrollViewport">
-          <div class="scroll-content" id="scrollContent"></div>
-        </div>
-
-        <div class="scroll-hud">
-          <div id="hudTitle">Scrolling Challenge</div>
-          <div id="hudScore">Score: 0</div>
-        </div>
-      </div>
-    </section>
-
   </main>
 
-  <script type="module" src="js/scroll.js"></script>
+  <script src="js/scroll.js"></script>
 </body>
 </html>
