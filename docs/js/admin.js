@@ -1,218 +1,120 @@
-import { db } from "./firebase.js";
-
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
-  collection, getDocs, addDoc, updateDoc, deleteDoc,
-  doc, serverTimestamp, query, orderBy
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  getFirestore, collection, addDoc, getDocs, deleteDoc, doc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-window.addEventListener("DOMContentLoaded", () => {
-  document.body.classList.add("page-visible");
-});
+/* 🔥 YOUR FIREBASE CONFIG */
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "cranium-gymnasium.firebaseapp.com",
+  projectId: "cranium-gymnasium",
+};
 
-const sectionsRef = collection(db, "sections");
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 const titleInput = document.getElementById("titleInput");
-const textInput = document.getElementById("textInput");
+const scrollTextArea = document.getElementById("scrollText");
 const baseSpeed = document.getElementById("baseSpeed");
 const boostSpeed = document.getElementById("boostSpeed");
 const orderInput = document.getElementById("orderInput");
-const activeToggle = document.getElementById("activeToggle");
-
-const previewBtn = document.getElementById("previewBtn");
+const activeInput = document.getElementById("activeInput");
 const saveBtn = document.getElementById("saveBtn");
 const resetBtn = document.getElementById("resetBtn");
+const sectionsList = document.getElementById("sectionsList");
+const makeMistakeBtn = document.getElementById("makeMistakeBtn");
 
-const previewWrap = document.getElementById("previewWrap");
-const previewEl = document.getElementById("preview");
-const mistakeCount = document.getElementById("mistakeCount");
-
-const listEl = document.getElementById("list");
-const statusEl = document.getElementById("status");
-
-let editingId = null;
-let mistakesSet = new Set();
-
-function escapeHtml(s){
-  return s
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#39;");
-}
-
-function cleanWord(raw){
-  return raw.replace(/[^\p{L}\p{N}'-]/gu, "");
-}
-
-function setStatus(msg){
-  statusEl.textContent = msg || "";
-}
-
-function renderPreview(text){
-  const tokens = text.split(/\s+/).filter(Boolean);
-  previewEl.innerHTML = tokens.map(raw => {
-    const clean = cleanWord(raw);
-    const isWord = clean.length > 0;
-    if (!isWord) return `${escapeHtml(raw)} `;
-    const isMistake = mistakesSet.has(clean);
-    return `<span class="pword ${isMistake ? "mistake" : ""}" data-clean="${escapeHtml(clean)}">${escapeHtml(raw)}</span> `;
-  }).join("");
-
-  mistakeCount.textContent = `Mistakes: ${mistakesSet.size}`;
-}
-
-previewEl.addEventListener("click", (e) => {
-  const t = e.target;
-  if (!(t instanceof HTMLElement)) return;
-  if (!t.classList.contains("pword")) return;
-
-  const clean = (t.dataset.clean || "").trim();
-  if (!clean) return;
-
-  if (mistakesSet.has(clean)) {
-    mistakesSet.delete(clean);
-    t.classList.remove("mistake");
-  } else {
-    mistakesSet.add(clean);
-    t.classList.add("mistake");
-  }
-  mistakeCount.textContent = `Mistakes: ${mistakesSet.size}`;
+/* Tabs */
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tab, .tab-content").forEach(el => el.classList.remove("active"));
+    tab.classList.add("active");
+    document.getElementById(tab.dataset.tab).classList.add("active");
+  });
 });
 
-previewBtn.addEventListener("click", () => {
-  const text = textInput.value || "";
-  previewWrap.classList.remove("hidden");
-  renderPreview(text);
-});
-
-function resetForm(){
-  editingId = null;
-  mistakesSet = new Set();
-  titleInput.value = "";
-  textInput.value = "";
-  baseSpeed.value = "28";
-  boostSpeed.value = "8";
-  orderInput.value = "1";
-  activeToggle.value = "true";
-  previewWrap.classList.add("hidden");
-  previewEl.innerHTML = "";
-  mistakeCount.textContent = "Mistakes: 0";
-  setStatus("");
+/* Generate subtle mistake */
+function generateMistake(word) {
+  const variants = [
+    w => w.slice(0, -1),
+    w => w + w[w.length - 1],
+    w => w.replace(/ie/g, "ei"),
+    w => w.replace(/ei/g, "ie"),
+    w => w.replace(/a/g, "@"),
+    w => w.replace(/o/g, "0"),
+    w => w.replace(/s/g, "z"),
+    w => w.replace(/([a-z])/, '$1$1'),
+  ];
+  const fn = variants[Math.floor(Math.random() * variants.length)];
+  const res = fn(word);
+  return res === word ? word + "e" : res;
 }
 
-resetBtn.addEventListener("click", resetForm);
-
-async function loadList(){
-  listEl.innerHTML = "Loading…";
-  const q = query(sectionsRef, orderBy("order","asc"));
-  const snap = await getDocs(q);
-
-  const rows = snap.docs.map(d => ({ id:d.id, ...d.data() }));
-
-  if (!rows.length){
-    listEl.innerHTML = `<div class="item"><div class="item-title">No sections yet</div><div class="item-meta">Create one on the left.</div></div>`;
+/* Create mistake from selection */
+makeMistakeBtn.addEventListener("click", () => {
+  const start = scrollTextArea.selectionStart;
+  const end = scrollTextArea.selectionEnd;
+  if (start === end) {
+    alert("Select a word first.");
     return;
   }
-
-  listEl.innerHTML = rows.map(r => {
-    const type = r.type || "unknown";
-    const title = r.title || "(untitled)";
-    const active = r.active ? "Active" : "Inactive";
-    const order = r.order ?? "-";
-    const mistakes = Array.isArray(r.data?.mistakes) ? r.data.mistakes.length : 0;
-
-    return `
-      <div class="item">
-        <div class="item-title">${escapeHtml(title)}</div>
-        <div class="item-meta">Type: ${escapeHtml(type)} • Order: ${order} • ${active} • Mistakes: ${mistakes}</div>
-        <div class="item-actions">
-          <button class="cranium-button" data-action="edit" data-id="${r.id}">Edit</button>
-          <button class="cranium-button" data-action="delete" data-id="${r.id}">Delete</button>
-        </div>
-      </div>
-    `;
-  }).join("");
-}
-
-listEl.addEventListener("click", async (e) => {
-  const t = e.target;
-  if (!(t instanceof HTMLElement)) return;
-  if (!(t instanceof HTMLButtonElement)) return;
-
-  const action = t.dataset.action;
-  const id = t.dataset.id;
-  if (!action || !id) return;
-
-  if (action === "delete") {
-    if (!confirm("Delete this section?")) return;
-    await deleteDoc(doc(db, "sections", id));
-    setStatus("Deleted.");
-    await loadList();
+  const text = scrollTextArea.value;
+  const selected = text.slice(start, end).trim();
+  if (!selected || selected.includes(" ")) {
+    alert("Please select a single word.");
     return;
   }
-
-  if (action === "edit") {
-    // load doc
-    const snap = await getDocs(query(sectionsRef)); // simple fetch-all then find
-    const found = snap.docs.find(d => d.id === id);
-    if (!found) return;
-
-    const data = found.data();
-
-    editingId = id;
-    titleInput.value = data.title || "";
-    textInput.value = data.data?.content || "";
-    baseSpeed.value = String(data.data?.baseSpeedPxPerSec ?? 28);
-    boostSpeed.value = String(data.data?.boostPxPerSec ?? 8);
-    orderInput.value = String(data.order ?? 1);
-    activeToggle.value = String(!!data.active);
-
-    mistakesSet = new Set(Array.isArray(data.data?.mistakes) ? data.data.mistakes : []);
-
-    previewWrap.classList.remove("hidden");
-    renderPreview(textInput.value || "");
-
-    setStatus("Editing existing section. Make changes and click Save.");
-  }
+  const mistake = generateMistake(selected);
+  scrollTextArea.value = text.slice(0, start) + mistake + text.slice(end);
 });
 
+/* Save section */
 saveBtn.addEventListener("click", async () => {
-  const title = (titleInput.value || "").trim();
-  const content = (textInput.value || "").trim();
-
-  if (!title || !content) {
-    setStatus("Please provide a title and text.");
+  if (!titleInput.value || !scrollTextArea.value) {
+    alert("Title and text required.");
     return;
   }
 
-  const payload = {
+  await addDoc(collection(db, "sections"), {
     type: "scroll",
-    title,
-    active: activeToggle.value === "true",
-    order: Number(orderInput.value || 1),
-    data: {
-      content,
-      mistakes: Array.from(mistakesSet),
-      baseSpeedPxPerSec: Number(baseSpeed.value || 28),
-      boostPxPerSec: Number(boostSpeed.value || 8),
-    },
-    updatedAt: serverTimestamp()
-  };
+    title: titleInput.value,
+    text: scrollTextArea.value,
+    baseSpeed: Number(baseSpeed.value),
+    boost: Number(boostSpeed.value),
+    order: Number(orderInput.value),
+    active: activeInput.value === "true",
+    created: Date.now()
+  });
 
-  if (editingId) {
-    await updateDoc(doc(db, "sections", editingId), payload);
-    setStatus("Updated.");
-  } else {
-    await addDoc(sectionsRef, {
-      ...payload,
-      createdAt: serverTimestamp()
-    });
-    setStatus("Saved new section.");
-  }
-
-  await loadList();
+  resetForm();
+  loadSections();
 });
 
-loadList();
-resetForm();
+/* Reset */
+function resetForm() {
+  titleInput.value = "";
+  scrollTextArea.value = "";
+}
+
+/* Load sections */
+async function loadSections() {
+  sectionsList.innerHTML = "";
+  const snap = await getDocs(collection(db, "sections"));
+  snap.forEach(docSnap => {
+    const d = docSnap.data();
+    const div = document.createElement("div");
+    div.className = "item";
+    div.innerHTML = `
+      <strong>${d.title}</strong><br>
+      Mistakes: ${(d.text.match(/@|0|zz|ee/g)||[]).length}<br>
+      <button data-id="${docSnap.id}">Delete</button>
+    `;
+    div.querySelector("button").onclick = async () => {
+      await deleteDoc(doc(db, "sections", docSnap.id));
+      loadSections();
+    };
+    sectionsList.appendChild(div);
+  });
+}
+
+loadSections();
