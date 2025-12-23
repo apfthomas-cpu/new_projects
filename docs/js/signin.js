@@ -19,5 +19,5 @@ continueBtn.addEventListener("click", () => {
   localStorage.setItem("ci_studentClass", cls);
   localStorage.setItem("ci_studentName", name);
 
-  window.location.href = "scroll.html";
+  navigateWithFade("scroll.html");
 });

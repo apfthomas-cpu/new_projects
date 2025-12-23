@@ -2,18 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Identify Yourself</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In</title>
 
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/buttons.css">
-  <link rel="stylesheet" href="css/signin.css">
 </head>
-<body class="signin-page">
+
+<body class="page">
 
   <main class="center-screen">
-    <section class="glass-modal signin-box">
-      <h1>Who is taking the quiz?</h1>
+    <section class="glass-panel fade-in">
+
+      <header class="app-header">
+        <h1>Who is taking the quiz?</h1>
+      </header>
 
       <label for="classSelect">Class</label>
       <select id="classSelect">
@@ -25,14 +28,20 @@
       </select>
 
       <label for="nameInput">Name</label>
-      <input id="nameInput" type="text" placeholder="Your name" autocomplete="name" />
+      <input id="nameInput" type="text" placeholder="Your name" />
 
-      <div class="error" id="errorMsg"></div>
+      <div id="errorMsg"></div>
 
-      <button class="cranium-button" id="continueBtn">Continue</button>
+      <button id="continueBtn" class="cranium-button">Continue</button>
+
+      <footer class="app-footer">
+        <p>Good luck!</p>
+      </footer>
+
     </section>
   </main>
 
+  <script src="js/transitions.js"></script>
   <script src="js/signin.js"></script>
 </body>
 </html>

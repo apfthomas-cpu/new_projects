@@ -3,18 +3,14 @@ const videoStage = document.getElementById("video-stage");
 const welcomeStage = document.getElementById("welcome-stage");
 const enterBtn = document.getElementById("enterBtn");
 
-// When video ends, show welcome
-video.addEventListener("ended", showWelcome);
-
-// Fallback: if autoplay fails, click video to continue
-video.addEventListener("click", showWelcome);
-
 function showWelcome() {
   videoStage.style.display = "none";
   welcomeStage.classList.remove("hidden");
 }
 
-// Enter button → go to sign-in page
+video.addEventListener("ended", showWelcome);
+video.addEventListener("click", showWelcome);
+
 enterBtn.addEventListener("click", () => {
-  window.location.href = "signin.html";
+  navigateWithFade("signin.html");
 });
