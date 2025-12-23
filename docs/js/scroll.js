@@ -1,35 +1,76 @@
+import { db } from "./firebase.js";
+import {
+  collection,
+  getDocs,
+  query,
+  where
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
 const scrollContent = document.getElementById("scrollContent");
 const scoreEl = document.getElementById("score");
+const titleEl = document.getElementById("scrollTitle");
 const endOverlay = document.getElementById("endOverlay");
 const continueBtn = document.getElementById("continueBtn");
+const wrapper = document.querySelector(".scroll-window");
 
 let score = 0;
+let mistakes = [];
+
 let position = 0;
 let lastTime = performance.now();
 
 let pixelsPerSecond = 14;
 let targetSpeed = 14;
-const boostAmount = 5;
+let boostAmount = 5;
 
 let started = false;
 let ended = false;
 
-/* Demo text (replace later with Firebase) */
-const text = `
-<p>This is a fallback passage so the scroll still works.</p>
-<p>Click the word mistake to test scoring and speed.</p>
-<p>Everything else will still turn bold but not affect speed.</p>
-<p>The text will smoothly scroll upward until complete.</p>
-<p>Try clicking mistake again for speed boost.</p>
-`;
+/* =========================
+   Load from Firestore
+========================= */
 
-/* Mistakes list */
-const mistakes = ["mistake"];
+async function loadScrollSection() {
+  titleEl.textContent = "Loading...";
 
-/* Build content */
-function initText(raw) {
-  scrollContent.innerHTML = raw;
+  try {
+    const q = query(
+      collection(db, "scroll_sections"),
+      where("active", "==", true)
+    );
 
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      throw new Error("No active scroll sections found.");
+    }
+
+    const sections = snap.docs.map(d => d.data());
+    const chosen = sections[Math.floor(Math.random() * sections.length)];
+
+    titleEl.textContent = chosen.title || "Scrolling Exercise";
+    scrollContent.innerHTML = chosen.text || "<p>No text provided.</p>";
+    mistakes = chosen.mistakes || [];
+
+    pixelsPerSecond = Number(chosen.baseSpeed ?? 14);
+    targetSpeed = pixelsPerSecond;
+    boostAmount = Number(chosen.boostSpeed ?? 5);
+
+    prepareText();
+    startScroll();
+
+  } catch (err) {
+    console.error("Failed to load scroll section:", err);
+    titleEl.textContent = "Error loading section";
+    scrollContent.innerHTML = "<p>Unable to load scrolling text.</p>";
+  }
+}
+
+/* =========================
+   Prepare clickable words
+========================= */
+
+function prepareText() {
   scrollContent.querySelectorAll("p").forEach(p => {
     p.innerHTML = p.innerText
       .split(" ")
@@ -37,7 +78,7 @@ function initText(raw) {
       .join(" ");
   });
 
-  document.querySelectorAll(".word").forEach(span => {
+  scrollContent.querySelectorAll(".word").forEach(span => {
     span.addEventListener("click", () => {
       if (!started || ended) return;
 
@@ -46,7 +87,7 @@ function initText(raw) {
       // Always bold when clicked
       span.classList.add("selected");
 
-      // Only correct words affect score/speed
+      // Only correct mistakes affect score + speed
       if (mistakes.includes(clean)) {
         if (!span.classList.contains("correct")) {
           span.classList.add("correct");
@@ -57,15 +98,24 @@ function initText(raw) {
       }
     });
   });
-
-  position = scrollContent.parentElement.clientHeight;
-  scrollContent.style.top = position + "px";
-  started = true;
 }
 
-initText(text);
+/* =========================
+   Start scrolling
+========================= */
 
-/* Smooth scroll loop */
+function startScroll() {
+  requestAnimationFrame(() => {
+    position = wrapper.clientHeight;
+    scrollContent.style.top = position + "px";
+    started = true;
+  });
+}
+
+/* =========================
+   Animation loop
+========================= */
+
 function scrollLoop(t) {
   const delta = (t - lastTime) / 1000;
   lastTime = t;
@@ -85,10 +135,19 @@ function scrollLoop(t) {
   requestAnimationFrame(scrollLoop);
 }
 
-requestAnimationFrame(scrollLoop);
+/* =========================
+   Continue button
+========================= */
 
-/* Continue button */
 continueBtn.addEventListener("click", () => {
-  // TODO: link to next section later
+  // TODO: replace with your next section URL later
   window.location.href = "#";
 });
+
+/* =========================
+   Init
+========================= */
+
+scoreEl.textContent = "Score: 0";
+loadScrollSection();
+requestAnimationFrame(scrollLoop);
