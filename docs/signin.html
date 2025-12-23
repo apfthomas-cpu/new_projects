@@ -1,65 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Identify Yourself</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/buttons.css">
-
-  <style>
-    .signin-box {
-      max-width: 90%;
-      width: 420px;
-      text-align: center;
-    }
-
-    .signin-box h1 {
-      margin-bottom: 20px;
-      font-size: clamp(1.6rem, 5vw, 2.2rem);
-    }
-
-    .signin-box label {
-      display: block;
-      margin: 12px 0 6px;
-      font-weight: 500;
-    }
-
-    .signin-box select,
-    .signin-box input {
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      border: none;
-      margin-bottom: 14px;
-      font-size: 1rem;
-      font-family: "Poppins", sans-serif;
-      outline: none;
-    }
-  </style>
+  <link rel="stylesheet" href="css/signin.css">
 </head>
-<body>
+<body class="signin-page">
 
-  <div class="center-screen">
-    <div class="glass-modal signin-box">
+  <main class="center-screen">
+    <section class="glass-modal signin-box">
       <h1>Who is taking the quiz?</h1>
 
       <label for="classSelect">Class</label>
       <select id="classSelect">
-  <option value="">-- Select class --</option>
-  <option value="Form 6">Form 6</option>
-  <option value="Form 7">Form 7</option>
-  <option value="Form 8">Form 8</option>
-  <option value="Visitor">Visitor</option>
-</select>
+        <option value="">-- Select class --</option>
+        <option value="Form 6">Form 6</option>
+        <option value="Form 7">Form 7</option>
+        <option value="Form 8">Form 8</option>
+        <option value="Visitor">Visitor</option>
+      </select>
 
       <label for="nameInput">Name</label>
-      <input id="nameInput" type="text" placeholder="Your name">
+      <input id="nameInput" type="text" placeholder="Your name" autocomplete="name" />
 
-      <button id="continueBtn" class="cranium-button">Continue</button>
-    </div>
-  </div>
+      <div class="error" id="errorMsg"></div>
+
+      <button class="cranium-button" id="continueBtn">Continue</button>
+    </section>
+  </main>
 
   <script src="js/signin.js"></script>
 </body>

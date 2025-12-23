@@ -1,28 +1,23 @@
-const studentsByClass = { /* same object as before */ };
-
 const classSelect = document.getElementById("classSelect");
-const nameSelect = document.getElementById("nameSelect");
+const nameInput = document.getElementById("nameInput");
 const errorMsg = document.getElementById("errorMsg");
+const continueBtn = document.getElementById("continueBtn");
 
-classSelect.innerHTML =
-  '<option value="">-- Select class --</option>' +
-  Object.keys(studentsByClass)
-    .map(c => `<option>${c}</option>`).join("");
+continueBtn.addEventListener("click", () => {
+  const cls = classSelect.value.trim();
+  const name = nameInput.value.trim();
 
-classSelect.onchange = () => {
-  const cls = classSelect.value;
-  nameSelect.innerHTML = cls
-    ? '<option value="">-- Select name --</option>' +
-      studentsByClass[cls].map(n => `<option>${n}</option>`).join("")
-    : '<option>-- First choose class --</option>';
-};
-
-document.getElementById("continueBtn").onclick = () => {
-  if (!classSelect.value || !nameSelect.value) {
-    errorMsg.textContent = "Please select class and name.";
+  if (!cls) {
+    errorMsg.textContent = "Please select your class.";
     return;
   }
-  localStorage.setItem("ci_studentClass", classSelect.value);
-  localStorage.setItem("ci_studentName", nameSelect.value);
+  if (!name) {
+    errorMsg.textContent = "Please enter your name.";
+    return;
+  }
+
+  localStorage.setItem("ci_studentClass", cls);
+  localStorage.setItem("ci_studentName", name);
+
   window.location.href = "scroll.html";
-};
+});
