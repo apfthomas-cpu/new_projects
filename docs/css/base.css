@@ -31,14 +31,13 @@ html, body {
   color: var(--text-dark);
 }
 
-/* === UNIVERSAL CENTERING WRAPPER === */
+/* === UNIVERSAL CENTERING === */
 .center-screen {
   min-height: 100svh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding:
-    clamp(16px, 4vw, 48px);
+  padding: clamp(16px, 4vw, 48px);
 }
 
 /* === GLASS PANEL === */
@@ -50,8 +49,7 @@ html, body {
   box-shadow: var(--shadow-soft);
   width: 100%;
   max-width: min(92vw, 820px);
-  padding:
-    clamp(18px, 4vw, 48px);
+  padding: clamp(18px, 4vw, 48px);
 }
 
 /* === TYPOGRAPHY === */
@@ -62,8 +60,8 @@ h1, h2, h3 {
 
 p {
   margin: 0 0 1em;
-  line-height: 1.55;
-  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+  line-height: 1.6;
+  font-size: clamp(1.05rem, 3.5vw, 1.2rem);
 }
 
 /* Utility */
@@ -71,8 +69,12 @@ p {
   display: none !important;
 }
 
-/* === RESPONSIVE TWEAKS === */
+/* === RESPONSIVE BOOST === */
 @media (max-width: 600px) {
+  body {
+    font-size: 18px;
+  }
+
   .glass-box {
     border-radius: var(--radius-medium);
   }
