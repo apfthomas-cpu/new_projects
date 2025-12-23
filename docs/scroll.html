@@ -6,43 +6,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Global styles -->
-  <link rel="stylesheet" href="base.css" />
-
-  <!-- Page-specific styles (optional if you add later) -->
-  <link rel="stylesheet" href="scroll.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/scroll.css" />
 </head>
 
 <body class="page fade">
 
-  <div class="app center-screen">
-    <div class="glass-modal glass-modal.wide">
+  <div class="app">
+    <main class="center-screen">
 
-      <!-- Header -->
-      <header>
-        <h1>Cranium Gymnasium</h1>
-        <p class="subtitle">Scrolling Accuracy Exercise</p>
-      </header>
+      <!-- Wide glass panel -->
+      <section class="glass-modal wide scroll-panel">
 
-      <!-- Scroll window -->
-      <main class="scroll-wrapper">
-        <div class="scroll-window">
-          <div id="scrollContent" class="scroll-content">
-            <!-- JS will inject text here -->
+        <!-- Header -->
+        <header class="scroll-header">
+          <h1>Cranium Gymnasium</h1>
+          <p class="subtitle">Scrolling Accuracy Exercise</p>
+        </header>
+
+        <!-- Scroll window -->
+        <div class="scroll-wrapper">
+          <div class="scroll-window">
+            <div id="scrollContent" class="scroll-content">
+              <!-- JS injects text -->
+            </div>
           </div>
         </div>
-      </main>
 
-      <!-- Footer -->
-      <footer class="scroll-footer">
-        <div id="scrollTitle">Loading...</div>
-        <div id="score">Score: 0</div>
-      </footer>
+        <!-- Footer -->
+        <footer class="scroll-footer">
+          <div id="scrollTitle">Loading...</div>
+          <div id="score">Score: 0</div>
+        </footer>
 
-    </div>
+      </section>
+
+    </main>
   </div>
 
   <!-- Scroll logic -->
-  <script src="scroll.js"></script>
+  <script src="js/scroll.js"></script>
 
 </body>
 </html>

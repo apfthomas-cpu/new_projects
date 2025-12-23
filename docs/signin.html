@@ -4,46 +4,52 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Cranium Gymnasium – Sign In</title>
+
   <link rel="stylesheet" href="css/base.css"/>
   <link rel="stylesheet" href="css/buttons.css"/>
   <link rel="stylesheet" href="css/signin.css"/>
 </head>
 
-<body class="page">
-  <main class="center-screen">
-    <section class="glass-panel narrow fade-in">
-      <header class="app-header">
-        <h1 class="brand">Cranium Gymnasium</h1>
-        <p class="subtitle">Please enter your details to begin.</p>
-      </header>
+<body class="page fade">
 
-      <form id="signinForm">
-        <div class="field">
-          <label for="classSelect">Class</label>
-          <select id="classSelect" required>
-            <option value="">-- Select class --</option>
-            <option>Form 6</option>
-            <option>Form 7</option>
-            <option>Form 8</option>
-            <option>Visitor</option>
-          </select>
-        </div>
+  <div class="app">
+    <main class="center-screen">
 
-        <div class="field">
-          <label for="nameInput">Name</label>
-          <input id="nameInput" type="text" placeholder="Your name" required/>
-        </div>
+      <section class="glass-modal narrow fade-in">
+        <header class="app-header">
+          <h1 class="brand">Cranium Gymnasium</h1>
+          <p class="subtitle">Please enter your details to begin.</p>
+        </header>
 
-        <div class="button-row">
-          <button class="cranium-button" type="submit">Continue</button>
-        </div>
+        <form id="signinForm">
+          <div class="field">
+            <label for="classSelect">Class</label>
+            <select id="classSelect" required>
+              <option value="">-- Select class --</option>
+              <option>Form 6</option>
+              <option>Form 7</option>
+              <option>Form 8</option>
+              <option>Visitor</option>
+            </select>
+          </div>
 
-        <p id="errorMsg" class="error" aria-live="polite"></p>
-      </form>
+          <div class="field">
+            <label for="nameInput">Name</label>
+            <input id="nameInput" type="text" placeholder="Your name" required/>
+          </div>
 
-      <footer class="app-footer">🧠 Cranium Gymnasium</footer>
-    </section>
-  </main>
+          <div class="button-row">
+            <button class="cranium-button" type="submit">Continue</button>
+          </div>
+
+          <p id="errorMsg" class="error" aria-live="polite"></p>
+        </form>
+
+        <footer class="app-footer">🧠 Cranium Gymnasium</footer>
+      </section>
+
+    </main>
+  </div>
 
   <script type="module" src="js/signin.js"></script>
 </body>

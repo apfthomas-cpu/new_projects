@@ -4,33 +4,41 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Cranium Gymnasium</title>
+
   <link rel="stylesheet" href="css/base.css"/>
   <link rel="stylesheet" href="css/buttons.css"/>
   <link rel="stylesheet" href="css/launch.css"/>
 </head>
 
-<body class="page">
+<body class="page fade">
+
+  <!-- Video intro stage -->
   <div id="video-stage">
     <video id="introVideo" autoplay muted playsinline>
       <source src="media/St_Philips_Gymnasium.mp4" type="video/mp4"/>
     </video>
   </div>
 
+  <!-- Welcome stage -->
   <div id="welcome-stage" class="hidden">
-    <main class="center-screen">
-      <section class="glass-panel narrow fade-in">
-        <header class="app-header">
-          <h1 class="brand">Cranium Gymnasium</h1>
-          <p class="subtitle">Train your mind.</p>
-        </header>
+    <div class="app">
+      <main class="center-screen">
 
-        <div class="button-row">
-          <button id="enterBtn" class="cranium-button">Enter</button>
-        </div>
+        <section class="glass-modal narrow fade-in">
+          <header class="app-header">
+            <h1 class="brand">Cranium Gymnasium</h1>
+            <p class="subtitle">Train your mind.</p>
+          </header>
 
-        <footer class="app-footer">🧠 Cranium Gymnasium</footer>
-      </section>
-    </main>
+          <div class="button-row">
+            <button id="enterBtn" class="cranium-button">Enter</button>
+          </div>
+
+          <footer class="app-footer">🧠 Cranium Gymnasium</footer>
+        </section>
+
+      </main>
+    </div>
   </div>
 
   <script type="module" src="js/launch.js"></script>
