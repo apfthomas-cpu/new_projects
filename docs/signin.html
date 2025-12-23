@@ -3,27 +3,64 @@
 <head>
   <meta charset="UTF-8">
   <title>Identify Yourself</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/buttons.css">
-  <link rel="stylesheet" href="css/signin.css">
+
+  <style>
+    .signin-box {
+      max-width: 90%;
+      width: 420px;
+      text-align: center;
+    }
+
+    .signin-box h1 {
+      margin-bottom: 20px;
+      font-size: clamp(1.6rem, 5vw, 2.2rem);
+    }
+
+    .signin-box label {
+      display: block;
+      margin: 12px 0 6px;
+      font-weight: 500;
+    }
+
+    .signin-box select,
+    .signin-box input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      margin-bottom: 14px;
+      font-size: 1rem;
+      font-family: "Poppins", sans-serif;
+      outline: none;
+    }
+  </style>
 </head>
 <body>
 
-<div class="glass-box signin-box">
-  <h1>Who is taking the quiz?</h1>
+  <div class="center-screen">
+    <div class="glass-modal signin-box">
+      <h1>Who is taking the quiz?</h1>
 
-  <label>Class</label>
-  <select id="classSelect"></select>
+      <label for="classSelect">Class</label>
+      <select id="classSelect">
+  <option value="">-- Select class --</option>
+  <option value="Form 6">Form 6</option>
+  <option value="Form 7">Form 7</option>
+  <option value="Form 8">Form 8</option>
+  <option value="Visitor">Visitor</option>
+</select>
 
-  <label>Name</label>
-  <select id="nameSelect"></select>
+      <label for="nameInput">Name</label>
+      <input id="nameInput" type="text" placeholder="Your name">
 
-  <div id="errorMsg"></div>
+      <button id="continueBtn" class="cranium-button">Continue</button>
+    </div>
+  </div>
 
-  <button class="cranium-button" id="continueBtn">Continue</button>
-</div>
-
-<script src="js/storage.js"></script>
-<script src="js/signin.js"></script>
+  <script src="js/signin.js"></script>
 </body>
 </html>
