@@ -1,31 +1,88 @@
-/* Layout container */
-.admin-content {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: 24px;
-  width: 100%;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cranium Gymnasium – Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-/* On tablets */
-@media (max-width: 1024px) {
-  .admin-content {
-    grid-template-columns: 1fr;
-  }
-}
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
 
-/* Text editor area */
-textarea#scrollText {
-  width: 100%;
-  min-height: 280px;
-  resize: vertical;
-  font-size: clamp(1rem, 2.5vw, 1.1rem);
-  line-height: 1.6;
-  padding: 16px;
-  border-radius: 16px;
-}
+<main class="admin-panel glass-box">
+  <header class="admin-header">
+    <h1>Cranium Gymnasium – Admin</h1>
+    <p>Manage sections and view pupil results</p>
+  </header>
 
-/* Card widening */
-.admin-card {
-  width: 100%;
-  max-width: none;
-}
+  <div class="tabs">
+    <button class="tab active" data-tab="sections">Sections</button>
+    <button class="tab" data-tab="attempts">Attempts Viewer</button>
+  </div>
+
+  <section id="sections" class="tab-content active">
+    <div class="admin-content">
+      <div class="admin-card">
+        <h2>Create / Edit Scroll Section</h2>
+
+        <label>Title</label>
+        <input id="titleInput" type="text">
+
+        <label>Text</label>
+        <textarea id="scrollText"></textarea>
+
+        <button id="makeMistakeBtn" class="secondary-btn">
+          Create mistake from selection
+        </button>
+
+        <div class="row">
+          <div>
+            <label>Base speed</label>
+            <input id="baseSpeed" type="number" value="30">
+          </div>
+          <div>
+            <label>Boost</label>
+            <input id="boostSpeed" type="number" value="8">
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Order</label>
+            <input id="orderInput" type="number" value="1">
+          </div>
+          <div>
+            <label>Active</label>
+            <select id="activeInput">
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="saveBtn">Save</button>
+          <button id="resetBtn" class="secondary-btn">Reset</button>
+        </div>
+      </div>
+
+      <div class="admin-card">
+        <h2>Existing Sections</h2>
+        <div id="sectionsList"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="attempts" class="tab-content">
+    <div class="admin-card">
+      <h2>Pupil Attempts</h2>
+      <div id="attemptsList"></div>
+    </div>
+  </section>
+
+</main>
+
+<script type="module" src="js/admin.js"></script>
+</body>
+</html>
