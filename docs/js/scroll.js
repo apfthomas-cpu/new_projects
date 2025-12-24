@@ -1,3 +1,6 @@
+// ===============================
+// Firebase imports
+// ===============================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getFirestore,
@@ -7,7 +10,9 @@ import {
   where
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// 🔥 Firebase config
+// ===============================
+// Firebase config
+// ===============================
 const firebaseConfig = {
   apiKey: "AIzaSyCgjZv-a6t23QqELDSrY8402hZcY_N_Ors",
   authDomain: "cranium-gymnasium.firebaseapp.com",
@@ -17,15 +22,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// DOM
-const scrollContent = document.getElementById("scrollContent");
-const scrollTitle = document.getElementById("scrollTitle");
-const statusEl = document.getElementById("status");
-const scoreEl = document.getElementById("score");
-const endOverlay = document.getElementById("end-overlay");
-const continueBtn = document.getElementById("continueBtn");
-
+// ===============================
 // State
+// ===============================
 let position = 0;
 let speed = 20;
 let targetSpeed = 20;
@@ -35,28 +34,16 @@ let score = 0;
 let ended = false;
 let mistakes = [];
 
-// Common mistake list
-const COMMON_MISTAKES = [
-  "familys","reign","hapy","could of","should of","would of",
-  "their","there","our","are","cleer","alberts",
-  "acheive","definately","wich","recieve","seperate",
-  "enviroment","goverment","arguement"
-];
+let scrollContent, scoreEl, statusEl;
 
+// ===============================
 // Helpers
+// ===============================
 function wrapWords(text) {
   return text
     .split(/\s+/)
     .map(w => `<span class="word">${w}</span>`)
     .join(" ");
-}
-
-function extractMistakes(text) {
-  return text
-    .toLowerCase()
-    .split(/\s+/)
-    .map(w => w.replace(/[^\w']/g, ""))
-    .filter(w => COMMON_MISTAKES.includes(w));
 }
 
 function enableClicks() {
@@ -65,11 +52,10 @@ function enableClicks() {
       if (ended || span.classList.contains("clicked")) return;
 
       span.classList.add("clicked");
+      span.style.fontWeight = "700";
+      span.style.color = "#000";
 
-      const word = span.innerText
-        .toLowerCase()
-        .replace(/[^\w']/g, "");
-
+      const word = span.innerText.toLowerCase().replace(/[^\w']/g, "");
       if (mistakes.includes(word)) {
         score++;
         targetSpeed += boost;
@@ -79,45 +65,43 @@ function enableClicks() {
   });
 }
 
-// Load random scroll section
+// ===============================
+// Firebase load
+// ===============================
 async function loadSection() {
-  try {
-    const q = query(
-      collection(db, "sections"),
-      where("type", "==", "scroll"),
-      where("active", "==", true)
-    );
+  statusEl.textContent = "Loading from database...";
 
-    const snap = await getDocs(q);
-    if (snap.empty) throw new Error("No active scroll sections");
+  const q = query(
+    collection(db, "sections"),
+    where("type", "==", "scroll"),
+    where("active", "==", true)
+  );
 
-    const docs = snap.docs;
-    const section = docs[Math.floor(Math.random() * docs.length)].data();
+  const snap = await getDocs(q);
+  if (snap.empty) throw new Error("No active scroll sections.");
 
-    scrollTitle.textContent = section.title || "Scrolling Exercise";
-    speed = section.baseSpeed || 20;
-    targetSpeed = speed;
-    boost = section.boost || 6;
+  const docs = snap.docs;
+  const section = docs[Math.floor(Math.random() * docs.length)].data();
 
-    scrollContent.innerHTML = wrapWords(section.text);
-    mistakes = extractMistakes(section.text);
+  speed = section.baseSpeed || 20;
+  targetSpeed = speed;
+  boost = section.boost || 6;
 
-    enableClicks();
+  scrollContent.innerHTML = wrapWords(section.text);
+  mistakes = (section.mistakes || []).map(m => m.toLowerCase());
 
-    const wrapper = scrollContent.parentElement;
-    position = wrapper.offsetHeight;
-    scrollContent.style.top = position + "px";
+  enableClicks();
 
-    statusEl.textContent = "Scroll started";
+  const wrapper = scrollContent.parentElement;
+  position = wrapper.offsetHeight + 20;
+  scrollContent.style.top = position + "px";
 
-  } catch (err) {
-    console.error("Firebase error:", err);
-    statusEl.textContent = "Failed to load text";
-    scrollContent.textContent = "Error loading scrolling text.";
-  }
+  statusEl.textContent = "Scroll started";
 }
 
+// ===============================
 // Scroll loop
+// ===============================
 function scrollLoop(t) {
   const delta = (t - lastTime) / 1000;
   lastTime = t;
@@ -127,20 +111,28 @@ function scrollLoop(t) {
     position -= speed * delta;
     scrollContent.style.top = position + "px";
 
-    const h = scrollContent.offsetHeight;
-    if (position + h < 0) {
+    if (position + scrollContent.offsetHeight < 0) {
       ended = true;
-      endOverlay.style.display = "flex";
+      document.getElementById("end-overlay").style.display = "flex";
     }
   }
 
   requestAnimationFrame(scrollLoop);
 }
 
-continueBtn.onclick = () => {
-  window.location.href = "index.html";
-};
+// ===============================
+// Init — SAFE & ORDERED
+// ===============================
+window.addEventListener("DOMContentLoaded", async () => {
+  scrollContent = document.getElementById("scroll-text");
+  scoreEl = document.getElementById("score");
+  statusEl = document.getElementById("status");
 
-// Init
-loadSection();
-requestAnimationFrame(scrollLoop);
+  try {
+    await loadSection();        // ✅ wait for Firebase
+    requestAnimationFrame(scrollLoop); // ✅ start scroll only after load
+  } catch (err) {
+    console.error(err);
+    statusEl.textContent = "Failed to load text.";
+  }
+});
