@@ -2,58 +2,45 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Cranium Gymnasium – Scrolling Exercise</title>
+  <title>Cranium Gymnasium – Scroll</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/scroll.css" />
 </head>
 
-<body class="page fade">
+<body>
 
-  <div class="app">
-    <main class="center-screen">
+<div class="app">
+  <main class="center-screen">
+    <section class="glass-modal glass-modal-wide scroll-panel">
 
-      <section class="glass-modal glass-modal-wide scroll-panel">
+      <header class="scroll-header">
+        <h1 id="scroll-title">Cranium Gymnasium</h1>
+        <p class="subtitle">Scrolling Accuracy Exercise</p>
+      </header>
 
-        <!-- Header -->
-        <header class="scroll-header">
-          <h1>Cranium Gymnasium</h1>
-          <p class="subtitle">Scrolling Accuracy Exercise</p>
-        </header>
+      <div class="scroll-window">
+        <div id="scroll-text" class="scroll-content">Loading...</div>
+      </div>
 
-        <!-- Scroll window -->
-        <div id="scroll-wrapper" class="scroll-wrapper">
-          <div class="scroll-window">
-            <div id="scroll-text" class="scroll-content">
-              Loading...
-            </div>
-          </div>
-        </div>
+      <footer class="scroll-footer">
+        <div id="status">Loading text…</div>
+        <div>Score: <span id="score">0</span></div>
+      </footer>
 
-        <!-- Footer -->
-        <footer class="scroll-footer">
-          <div id="status">Loading...</div>
-          <div>Score: <span id="score">0</span></div>
-        </footer>
+    </section>
+  </main>
+</div>
 
-      </section>
-
-    </main>
+<!-- End Overlay -->
+<div id="end-overlay" class="end-overlay">
+  <div class="overlay-box">
+    <h1>SECTION COMPLETE</h1>
+    <button id="continue-btn">Continue to next section</button>
   </div>
+</div>
 
-  <!-- END OVERLAY -->
-  <div id="end-overlay" class="end-overlay">
-    <div class="overlay-box">
-      <h1>SECTION COMPLETE</h1>
-      <button id="continue-btn" class="cranium-button">
-        Continue to next section
-      </button>
-    </div>
-  </div>
-
-  <!-- Scroll logic -->
-  <script type="module" src="js/scroll.js"></script>
-
+<script type="module" src="js/scroll.js"></script>
 </body>
 </html>
