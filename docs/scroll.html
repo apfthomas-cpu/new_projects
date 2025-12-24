@@ -1,31 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Cranium Gymnasium – Scrolling Exercise</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Scroll styles -->
-  <link rel="stylesheet" href="./css/scroll.css">
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/scroll.css" />
 </head>
+
 <body>
 
-  <div class="panel">
-    <h1 id="scrollTitle">Loading…</h1>
+  <div class="app">
+    <main class="center-screen">
 
-    <div class="wrapper">
-      <div id="scrollContent" class="content">
-        Loading…
-      </div>
-    </div>
+      <section class="glass-modal">
 
-    <div class="footer">
-      Score: <span id="score">0</span>
+        <header class="scroll-header">
+          <h1>Cranium Gymnasium</h1>
+          <p class="subtitle">Scrolling Accuracy Exercise</p>
+        </header>
+
+        <div class="scroll-wrapper">
+          <div id="scroll-text" class="scroll-content">
+            Loading...
+          </div>
+        </div>
+
+        <footer class="scroll-footer">
+          <div id="status">Loading...</div>
+          <div>Score: <span id="score">0</span></div>
+        </footer>
+
+      </section>
+
+    </main>
+  </div>
+
+  <!-- End overlay -->
+  <div id="end-overlay" class="end-overlay">
+    <div class="overlay-box">
+      <h2>SECTION COMPLETE</h2>
+      <button id="continue-btn">Continue to next section</button>
     </div>
   </div>
 
-  <!-- Scroll logic -->
-  <script type="module" src="./js/scroll.js"></script>
+  <!-- Script -->
+  <script type="module" src="js/scroll.js"></script>
 
 </body>
 </html>

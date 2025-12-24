@@ -12,26 +12,28 @@ html, body {
   height: 100%;
 }
 
-/* ===== Page background ===== */
-body.page {
+/* ===== Global body + background (LOCKED HERE) ===== */
+body {
   min-height: 100vh;
   width: 100%;
   font-family: "Poppins", system-ui, sans-serif;
   color: #111;
 
-  /* Background image */
-  background: url("/new_projects/media/Background.jpg") no-repeat center center fixed;
+  background-color: #3c4a55; /* fallback */
+  background-image: url("../media/Background.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
   background-size: cover;
 }
 
-/* ===== App wrapper fills viewport ===== */
+/* ===== App wrapper ===== */
 .app {
   min-height: 100vh;
   width: 100%;
   display: flex;
 }
 
-/* ===== Center content ===== */
 .center-screen {
   flex: 1;
   display: flex;
@@ -40,72 +42,29 @@ body.page {
   padding: clamp(16px, 3vw, 40px);
 }
 
-/* ===== Glass panels ===== */
-.glass-panel,
+/* ===== Glass panel ===== */
 .glass-modal {
   width: 100%;
-  max-width: 900px;
-  background: rgba(255, 255, 255, 0.9);
+  max-width: 1400px;
+  min-height: 80vh;
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border-radius: 24px;
-  padding: clamp(20px, 4vw, 48px);
+  border-radius: 28px;
+  padding: clamp(24px, 4vw, 48px);
   box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-}
-
-/* Wide version for admin/scroll */
-.glass-modal-wide {
-  max-width: 1600px;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ===== Typography ===== */
 h1, h2, h3 {
-  margin: 0 0 0.5em;
+  margin: 0;
   text-align: center;
 }
 
 p {
-  margin: 0 0 1em;
+  margin: 0;
   line-height: 1.6;
   text-align: center;
-}
-
-/* ===== Inputs ===== */
-input, select, textarea {
-  width: 100%;
-  padding: 12px 14px;
-  border-radius: 12px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-  font-family: inherit;
-}
-
-/* ===== Buttons ===== */
-button {
-  border: none;
-  border-radius: 14px;
-  padding: 12px 22px;
-  font-size: 1rem;
-  cursor: pointer;
-  background: linear-gradient(180deg, #8a9299, #6f777e);
-  color: #fff;
-  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
-  transition: transform .15s ease, box-shadow .15s ease;
-}
-
-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 18px rgba(0,0,0,0.35);
-}
-
-/* ===== Utility ===== */
-.hidden { display: none; }
-
-.fade {
-  animation: fadeIn .4s ease both;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
 }
