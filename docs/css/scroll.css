@@ -1,108 +1,167 @@
-body {
+/* ===============================
+   Page background
+=============================== */
+body.page {
   margin: 0;
   min-height: 100vh;
-  font-family: 'Poppins', sans-serif;
-  background: url("../media/Background.jpg") center center / cover no-repeat fixed;
-}
-
-.app {
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: linear-gradient(180deg, #2e3a3f 0%, #5f7c85 60%, #3a4f8a 100%);
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
 }
 
-.scroll-panel {
-  width: 90vw;
+/* ===============================
+   App wrapper
+=============================== */
+.app {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ===============================
+   Glass modal
+=============================== */
+.glass-modal {
+  width: 90%;
   max-width: 1200px;
-  height: 85vh;
-  background: rgba(255,255,255,0.78);
-  backdrop-filter: blur(12px);
+  height: 80vh;
+
+  background: rgba(255, 255, 255, 0.92);
   border-radius: 28px;
-  box-shadow: 0 18px 40px rgba(0,0,0,0.25);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(12px);
+
+  padding: 32px 40px;
+  box-sizing: border-box;
+
   display: flex;
   flex-direction: column;
 }
 
+.glass-modal-wide {
+  max-width: 1400px;
+}
+
+/* ===============================
+   Header
+=============================== */
 .scroll-header {
   text-align: center;
-  padding: 24px 20px 10px;
+  margin-bottom: 12px;
 }
 
 .scroll-header h1 {
-  font-family: 'Montserrat', sans-serif;
   margin: 0;
   font-size: 2.2rem;
+  font-weight: 700;
+  color: #111;
 }
 
 .subtitle {
   margin: 6px 0 0;
-  opacity: 0.8;
+  opacity: 0.75;
+  font-size: 1rem;
+}
+
+/* ===============================
+   Scroll window + wrapper
+=============================== */
+.scroll-window {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .scroll-wrapper {
   flex: 1;
-  overflow: hidden;
   position: relative;
+  overflow: hidden;
 
-  /* 👇 buffer between text and box edges */
+  /* buffer between text and edges */
   padding: 24px 5%;
-
   box-sizing: border-box;
 }
 
+/* ===============================
+   Scrolling text
+=============================== */
 .scroll-content {
   position: absolute;
-  left: 0;
-  right: 0;
+  left: 5%;
+  right: 5%;
+  top: 0;
 
   font-size: 1.05rem;
   line-height: 1.6;
+  color: #222;
 }
 
+/* Individual words */
+.word {
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.word:hover {
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
+}
+
+/* ===============================
+   Footer
+=============================== */
 .scroll-footer {
   display: flex;
   justify-content: space-between;
-  padding: 14px 24px;
+  align-items: center;
+  margin-top: 12px;
+
   font-size: 0.95rem;
   opacity: 0.85;
 }
 
-.word {
-  cursor: pointer;
-}
-
-.word.clicked {
-  font-weight: 700;
-  color: #000;
-}
-
-/* End overlay */
+/* ===============================
+   End overlay
+=============================== */
 .end-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.35);
+  background: rgba(0, 0, 0, 0.35);
   display: none;
   justify-content: center;
   align-items: center;
   z-index: 999;
 }
 
-.overlay-box {
-  background: rgba(255,255,255,0.95);
-  padding: 36px 48px;
-  border-radius: 22px;
+.end-overlay .overlay-box {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 40px 50px;
+  border-radius: 24px;
   text-align: center;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+}
+
+.end-overlay h1 {
+  margin: 0 0 20px;
+  font-size: 2rem;
 }
 
 .cranium-button {
-  margin-top: 18px;
   padding: 12px 28px;
-  border-radius: 14px;
+  border-radius: 16px;
   border: none;
-  background: linear-gradient(#9aa5b1,#6f7882);
+  cursor: pointer;
+  background: linear-gradient(#9aa5b1, #6f7882);
   color: #fff;
   font-size: 1rem;
-  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.cranium-button:hover {
+  opacity: 0.9;
 }
