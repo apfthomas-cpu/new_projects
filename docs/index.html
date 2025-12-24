@@ -10,25 +10,32 @@
   <link rel="stylesheet" href="css/launch.css" />
 </head>
 
-<body class="page">
+<body>
 
   <div class="launch-container">
 
-    <!-- 🎥 Background video -->
-    <video autoplay muted loop playsinline>
+    <video id="introVideo" autoplay muted playsinline>
       <source src="media/St_Philips_Gymnasium.mp4" type="video/mp4" />
       Your browser does not support the video tag.
     </video>
 
-    <!-- Optional overlay -->
-    <div class="launch-overlay">
-      <h1>Cranium Gymnasium</h1>
-      <button class="enter-btn" onclick="location.href='scroll.html'">
-        Start Exercise
-      </button>
-    </div>
-
   </div>
+
+  <script>
+    const video = document.getElementById("introVideo");
+
+    // When video finishes, go to sign-in page
+    video.addEventListener("ended", () => {
+      window.location.href = "signin.html";
+    });
+
+    // Fallback: if video can't play, skip after 8s
+    setTimeout(() => {
+      if (video.paused || video.ended) {
+        window.location.href = "signin.html";
+      }
+    }, 8000);
+  </script>
 
 </body>
 </html>

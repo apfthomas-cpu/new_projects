@@ -1,11 +1,28 @@
-#video-stage{
-  position:fixed;
-  inset:0;
-  background:black;
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: #000;
 }
 
-#video-stage video{
-  width:100%;
-  height:100%;
-  object-fit:cover;
+/* Fullscreen container */
+.launch-container {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  overflow: hidden;
+}
+
+/* Fullscreen video */
+.launch-container video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #000;
 }
