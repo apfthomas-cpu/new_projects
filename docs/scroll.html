@@ -1,52 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Cranium Gymnasium – Scrolling Exercise</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
-
-  <!-- Styles -->
-  <link rel="stylesheet" href="css/scroll.css">
+  <!-- Scroll styles -->
+  <link rel="stylesheet" href="./css/scroll.css">
 </head>
-
 <body>
 
-  <main class="app">
-    <section class="scroll-panel">
+  <div class="panel">
+    <h1 id="scrollTitle">Loading…</h1>
 
-      <header class="scroll-header">
-        <h1 id="scrollTitle">Cranium Gymnasium</h1>
-        <p class="subtitle">Scrolling Accuracy Exercise</p>
-      </header>
-
-      <div class="scroll-wrapper">
-        <div id="scrollContent" class="scroll-content">Loading…</div>
+    <div class="wrapper">
+      <div id="scrollContent" class="content">
+        Loading…
       </div>
+    </div>
 
-      <footer class="scroll-footer">
-        <div id="status">Loading…</div>
-        <div>Score: <span id="score">0</span></div>
-      </footer>
-
-    </section>
-  </main>
-
-  <!-- END OVERLAY -->
-  <div id="end-overlay" class="end-overlay">
-    <div class="overlay-box">
-      <h1>SECTION COMPLETE</h1>
-      <button id="continueBtn" class="cranium-button">
-        Continue to next section
-      </button>
+    <div class="footer">
+      Score: <span id="score">0</span>
     </div>
   </div>
 
-  <!-- Script -->
-  <script type="module" src="js/scroll.js"></script>
+  <!-- Scroll logic -->
+  <script type="module" src="./js/scroll.js"></script>
+
 </body>
 </html>
