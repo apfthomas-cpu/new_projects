@@ -1,46 +1,34 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta charset="UTF-8" />
   <title>Cranium Gymnasium</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <link rel="stylesheet" href="css/base.css"/>
-  <link rel="stylesheet" href="css/buttons.css"/>
-  <link rel="stylesheet" href="css/launch.css"/>
+  <!-- Base + launch styles -->
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/launch.css" />
 </head>
 
-<body class="page fade">
+<body class="page">
 
-  <!-- Video intro stage -->
-  <div id="video-stage">
-    <video id="introVideo" autoplay muted playsinline>
-      <source src="media/St_Philips_Gymnasium.mp4" type="video/mp4"/>
+  <div class="launch-container">
+
+    <!-- 🎥 Background video -->
+    <video autoplay muted loop playsinline>
+      <source src="media/St_Philips_Gymnasium.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
     </video>
-  </div>
 
-  <!-- Welcome stage -->
-  <div id="welcome-stage" class="hidden">
-    <div class="app">
-      <main class="center-screen">
-
-        <section class="glass-modal narrow fade-in">
-          <header class="app-header">
-            <h1 class="brand">Cranium Gymnasium</h1>
-            <p class="subtitle">Train your mind.</p>
-          </header>
-
-          <div class="button-row">
-            <button id="enterBtn" class="cranium-button">Enter</button>
-          </div>
-
-          <footer class="app-footer">🧠 Cranium Gymnasium</footer>
-        </section>
-
-      </main>
+    <!-- Optional overlay -->
+    <div class="launch-overlay">
+      <h1>Cranium Gymnasium</h1>
+      <button class="enter-btn" onclick="location.href='scroll.html'">
+        Start Exercise
+      </button>
     </div>
+
   </div>
 
-  <script type="module" src="js/launch.js"></script>
 </body>
 </html>
