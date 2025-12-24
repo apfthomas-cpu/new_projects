@@ -2,45 +2,51 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Cranium Gymnasium – Scroll</title>
+  <title>Cranium Gymnasium – Scrolling Exercise</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <link rel="stylesheet" href="css/base.css" />
-  <link rel="stylesheet" href="css/scroll.css" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/scroll.css">
 </head>
 
 <body>
 
-<div class="app">
-  <main class="center-screen">
-    <section class="glass-modal glass-modal-wide scroll-panel">
+  <main class="app">
+    <section class="scroll-panel">
 
       <header class="scroll-header">
-        <h1 id="scroll-title">Cranium Gymnasium</h1>
+        <h1 id="scrollTitle">Cranium Gymnasium</h1>
         <p class="subtitle">Scrolling Accuracy Exercise</p>
       </header>
 
-      <div class="scroll-window">
-        <div id="scroll-text" class="scroll-content">Loading...</div>
+      <div class="scroll-wrapper">
+        <div id="scrollContent" class="scroll-content">Loading…</div>
       </div>
 
       <footer class="scroll-footer">
-        <div id="status">Loading text…</div>
+        <div id="status">Loading…</div>
         <div>Score: <span id="score">0</span></div>
       </footer>
 
     </section>
   </main>
-</div>
 
-<!-- End Overlay -->
-<div id="end-overlay" class="end-overlay">
-  <div class="overlay-box">
-    <h1>SECTION COMPLETE</h1>
-    <button id="continue-btn">Continue to next section</button>
+  <!-- END OVERLAY -->
+  <div id="end-overlay" class="end-overlay">
+    <div class="overlay-box">
+      <h1>SECTION COMPLETE</h1>
+      <button id="continueBtn" class="cranium-button">
+        Continue to next section
+      </button>
+    </div>
   </div>
-</div>
 
-<script type="module" src="js/scroll.js"></script>
+  <!-- Script -->
+  <script type="module" src="js/scroll.js"></script>
 </body>
 </html>

@@ -1,6 +1,3 @@
-// ===============================
-// Firebase imports
-// ===============================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getFirestore,
@@ -10,7 +7,7 @@ import {
   where
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// 🔥 Your Firebase config
+// 🔥 Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyCgjZv-a6t23QqELDSrY8402hZcY_N_Ors",
   authDomain: "cranium-gymnasium.firebaseapp.com",
@@ -20,59 +17,71 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// ===============================
 // DOM
-// ===============================
-const scrollText = document.getElementById("scroll-text");
-const scrollTitle = document.getElementById("scroll-title");
-const scoreEl = document.getElementById("score");
+const scrollContent = document.getElementById("scrollContent");
+const scrollTitle = document.getElementById("scrollTitle");
 const statusEl = document.getElementById("status");
+const scoreEl = document.getElementById("score");
 const endOverlay = document.getElementById("end-overlay");
-const continueBtn = document.getElementById("continue-btn");
-const scrollWindow = document.querySelector(".scroll-window");
+const continueBtn = document.getElementById("continueBtn");
 
-// ===============================
 // State
-// ===============================
 let position = 0;
-let speed = 30;
-let targetSpeed = 30;
+let speed = 20;
+let targetSpeed = 20;
 let boost = 6;
-let lastTime = null;
-let ended = false;
+let lastTime = performance.now();
 let score = 0;
+let ended = false;
+let mistakes = [];
 
-// ===============================
+// Common mistake list
+const COMMON_MISTAKES = [
+  "familys","reign","hapy","could of","should of","would of",
+  "their","there","our","are","cleer","alberts",
+  "acheive","definately","wich","recieve","seperate",
+  "enviroment","goverment","arguement"
+];
+
 // Helpers
-// ===============================
 function wrapWords(text) {
   return text
-    .trim()
     .split(/\s+/)
     .map(w => `<span class="word">${w}</span>`)
     .join(" ");
 }
 
+function extractMistakes(text) {
+  return text
+    .toLowerCase()
+    .split(/\s+/)
+    .map(w => w.replace(/[^\w']/g, ""))
+    .filter(w => COMMON_MISTAKES.includes(w));
+}
+
 function enableClicks() {
   document.querySelectorAll(".word").forEach(span => {
     span.addEventListener("click", () => {
-      if (span.classList.contains("clicked") || ended) return;
+      if (ended || span.classList.contains("clicked")) return;
 
       span.classList.add("clicked");
-      score++;
-      scoreEl.textContent = score;
-      targetSpeed += boost;
+
+      const word = span.innerText
+        .toLowerCase()
+        .replace(/[^\w']/g, "");
+
+      if (mistakes.includes(word)) {
+        score++;
+        targetSpeed += boost;
+        scoreEl.textContent = score;
+      }
     });
   });
 }
 
-// ===============================
-// Load random section from Firebase
-// ===============================
+// Load random scroll section
 async function loadSection() {
   try {
-    statusEl.textContent = "Loading from Firebase…";
-
     const q = query(
       collection(db, "sections"),
       where("type", "==", "scroll"),
@@ -86,40 +95,40 @@ async function loadSection() {
     const section = docs[Math.floor(Math.random() * docs.length)].data();
 
     scrollTitle.textContent = section.title || "Scrolling Exercise";
-    speed = section.baseSpeed || 30;
+    speed = section.baseSpeed || 20;
     targetSpeed = speed;
     boost = section.boost || 6;
 
-    scrollText.innerHTML = wrapWords(section.text);
+    scrollContent.innerHTML = wrapWords(section.text);
+    mistakes = extractMistakes(section.text);
+
     enableClicks();
 
-    position = scrollWindow.offsetHeight;
-    scrollText.style.top = position + "px";
+    const wrapper = scrollContent.parentElement;
+    position = wrapper.offsetHeight;
+    scrollContent.style.top = position + "px";
 
     statusEl.textContent = "Scroll started";
 
   } catch (err) {
-    console.error("Firebase load failed:", err);
-    statusEl.textContent = "Failed to load text.";
-    scrollText.textContent = "Unable to load scrolling text.";
+    console.error("Firebase error:", err);
+    statusEl.textContent = "Failed to load text";
+    scrollContent.textContent = "Error loading scrolling text.";
   }
 }
 
-// ===============================
 // Scroll loop
-// ===============================
-function scrollLoop(timestamp) {
-  if (!lastTime) lastTime = timestamp;
-  const delta = (timestamp - lastTime) / 1000;
-  lastTime = timestamp;
+function scrollLoop(t) {
+  const delta = (t - lastTime) / 1000;
+  lastTime = t;
 
   if (!ended) {
     speed += (targetSpeed - speed) * 0.05;
     position -= speed * delta;
-    scrollText.style.top = position + "px";
+    scrollContent.style.top = position + "px";
 
-    const h = scrollText.offsetHeight;
-    if (h > 0 && position + h < 0) {
+    const h = scrollContent.offsetHeight;
+    if (position + h < 0) {
       ended = true;
       endOverlay.style.display = "flex";
     }
@@ -128,15 +137,10 @@ function scrollLoop(timestamp) {
   requestAnimationFrame(scrollLoop);
 }
 
-// ===============================
-// Events
-// ===============================
-continueBtn.addEventListener("click", () => {
-  window.location.href = "index.html"; // change later
-});
+continueBtn.onclick = () => {
+  window.location.href = "index.html";
+};
 
-// ===============================
 // Init
-// ===============================
 loadSection();
 requestAnimationFrame(scrollLoop);
