@@ -45,7 +45,7 @@ function smartMistake(word) {
     their: "there",
     there: "their",
     your: "you're",
-    "you're": "your",
+    you're: "your",
     our: "are",
     are: "our",
     clear: "cleer",
@@ -53,7 +53,7 @@ function smartMistake(word) {
     should: "should of",
     would: "would of",
     its: "it's",
-    "it's": "its"
+    it's: "its"
   };
 
   if (common[lower]) {
