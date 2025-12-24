@@ -45,7 +45,7 @@ function smartMistake(word) {
     their: "there",
     there: "their",
     your: "you're",
-    you're: "your",
+    "you're": "your",
     our: "are",
     are: "our",
     clear: "cleer",
@@ -53,19 +53,17 @@ function smartMistake(word) {
     should: "should of",
     would: "would of",
     its: "it's",
-    it's: "its"
+    "it's": "its"
   };
 
   if (common[lower]) {
     return preserveCase(word, common[lower]);
   }
 
-  // Possessive: Albert's → Alberts
   if (lower.endsWith("'s")) {
     return word.replace(/'s$/i, "s");
   }
 
-  // Simple spelling drop
   if (lower.length > 4) {
     return word.slice(0, -1);
   }
@@ -75,10 +73,11 @@ function smartMistake(word) {
 
 function preserveCase(original, replacement) {
   if (original[0] === original[0].toUpperCase()) {
-    return replacement.charAt(0).toUpperCase() + replacement.slice(1);
+    return replacement[0].toUpperCase() + replacement.slice(1);
   }
   return replacement;
 }
+
 
 /* --------------------------------------------------
    Create mistake from selected word
