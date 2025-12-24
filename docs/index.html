@@ -5,36 +5,35 @@
   <title>Cranium Gymnasium</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Base + launch styles -->
-  <link rel="stylesheet" href="css/base.css" />
+  <!-- ONLY launch styles here -->
   <link rel="stylesheet" href="css/launch.css" />
 </head>
 
 <body>
 
-  <div class="launch-container">
-
-    <video id="introVideo" autoplay muted playsinline>
-      <source src="media/St_Philips_Gymnasium.mp4" type="video/mp4" />
-      Your browser does not support the video tag.
-    </video>
-
-  </div>
+  <video
+    id="introVideo"
+    autoplay
+    muted
+    playsinline
+    preload="auto"
+  >
+    <source src="media/St_Philips_Gymnasium.mp4" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
 
   <script>
     const video = document.getElementById("introVideo");
 
-    // When video finishes, go to sign-in page
+    // Redirect when video ends
     video.addEventListener("ended", () => {
       window.location.href = "signin.html";
     });
 
-    // Fallback: if video can't play, skip after 8s
+    // Safety fallback: redirect after 15s
     setTimeout(() => {
-      if (video.paused || video.ended) {
-        window.location.href = "signin.html";
-      }
-    }, 8000);
+      window.location.href = "signin.html";
+    }, 15000);
   </script>
 
 </body>
