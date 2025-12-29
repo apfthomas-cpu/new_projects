@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Welcome – Cranium Gymnasium</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Normal app styles -->
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/buttons.css" />
+</head>
+
+<body class="page">
+
+  <div class="app">
+    <main class="center-screen">
+
+      <section class="glass-panel fade">
+        <header class="app-header">
+          <h1 class="brand">Welcome</h1>
+          <p class="subtitle">Cranium Gymnasium</p>
+        </header>
+
+        <div class="button-row">
+          <button class="cranium-button" id="enterBtn">
+            ENTER
+          </button>
+        </div>
+
+        <footer class="app-footer">
+          🧠 Train your mind
+        </footer>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    document.getElementById("enterBtn").addEventListener("click", () => {
+      window.location.href = "signin.html";
+    });
+  </script>
+
+</body>
+</html>
