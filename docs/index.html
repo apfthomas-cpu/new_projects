@@ -5,12 +5,13 @@
   <title>Cranium Gymnasium</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- ONLY launch styles here -->
+  <!-- IMPORTANT: launch page uses ONLY launch.css -->
   <link rel="stylesheet" href="css/launch.css" />
 </head>
 
 <body>
 
+  <!-- Fullscreen intro video -->
   <video
     id="introVideo"
     autoplay
@@ -18,21 +19,21 @@
     playsinline
     preload="auto"
   >
-    <source src="media/St_Philips_Gymnasium.mp4" type="video/mp4" />
+    <source src="media/intro.mp4" type="video/mp4" />
     Your browser does not support the video tag.
   </video>
 
   <script>
     const video = document.getElementById("introVideo");
 
-    // Redirect when video ends
+    // Redirect when the video finishes
     video.addEventListener("ended", () => {
-      window.location.href = "signin.html";
+      window.location.href = "welcome.html";
     });
 
-    // Safety fallback: redirect after 15s
+    // Fallback redirect (in case ended doesn't fire)
     setTimeout(() => {
-      window.location.href = "signin.html";
+      window.location.href = "welcome.html";
     }, 15000);
   </script>
 
