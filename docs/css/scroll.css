@@ -1,77 +1,23 @@
-.scroll-header {
-  text-align: center;
-  margin-bottom: 12px;
-}
-
-.subtitle {
-  margin-top: 6px;
-  opacity: 0.7;
-}
-
-/* Wrapper with bleed buffer */
 .scroll-wrapper {
-  flex: 1;
   position: relative;
   overflow: hidden;
-  margin: 24px 0;
-  padding: 0 6%; /* buffer from edges */
+  padding: 0 6%;
 }
 
-/* Scrolling text */
 .scroll-content {
   position: absolute;
   left: 0;
   right: 0;
-  top: 0;
-  font-size: 1.05rem;
-  line-height: 1.6;
-  text-align: left;
+
+  font-size: 1.6rem;     /* ⬅ ~50% larger */
+  line-height: 1.9;      /* ⬅ more readable */
+  color: #1a1a1a;
 }
 
-/* Footer */
-.scroll-footer {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.95rem;
-  opacity: 0.85;
-}
-
-/* Clicked words */
 .word {
   cursor: pointer;
 }
 
 .word.clicked {
   font-weight: 700;
-  color: #000;
-}
-
-/* End overlay */
-.end-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.4);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
-}
-
-.end-overlay .overlay-box {
-  background: #fff;
-  padding: 40px 48px;
-  border-radius: 24px;
-  text-align: center;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.35);
-}
-
-.end-overlay button {
-  margin-top: 20px;
-  padding: 12px 28px;
-  border-radius: 14px;
-  border: none;
-  background: linear-gradient(#9aa5b1,#6f7882);
-  color: #fff;
-  font-size: 1rem;
-  cursor: pointer;
 }
