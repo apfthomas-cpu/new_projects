@@ -1,21 +1,15 @@
-import { initializeApp } from
-  "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getFirestore,
   collection,
   getDocs,
   query,
   where
-} from
-  "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* ===============================
-   Firebase
-   =============================== */
-
+/* Firebase config */
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
+  apiKey: "AIzaSyCgjZv-a6t23QqELDSrY8402hZcY_N_Ors",
   authDomain: "cranium-gymnasium.firebaseapp.com",
   projectId: "cranium-gymnasium"
 };
@@ -23,106 +17,101 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-/* ===============================
-   DOM
-   =============================== */
-
-const scrollContent = document.getElementById("scroll-text");
+/* DOM */
+const scrollText = document.getElementById("scroll-text");
 const scoreEl = document.getElementById("score");
+const statusEl = document.getElementById("status");
+const endOverlay = document.getElementById("end-overlay");
+const continueBtn = document.getElementById("continue-btn");
 
-/* ===============================
-   State
-   =============================== */
-
-let speed = 20;
-let targetSpeed = 20;
-let boost = 6;
-let score = 0;
+/* State */
 let position = 0;
+let speed = 25;
+let targetSpeed = 25;
 let lastTime = performance.now();
 let ended = false;
 
-let mistakes = [];
+/* Safety text (never removed) */
+const FALLBACK_TEXT = `
+This scrolling exercise could not load live content.
 
-/* ===============================
-   Helpers
-   =============================== */
+If you are seeing this message, the system is still working
+and scrolling correctly, but Firebase did not return data.
 
-function wrapWords(text) {
-  return text.split(/\s+/).map(word =>
-    `<span class="word">${word}</span>`
-  ).join(" ");
+Please inform your teacher.
+`;
+
+/* Helpers */
+function wrap(text) {
+  return text
+    .trim()
+    .split(/\s+/)
+    .map(w => `<span class="word">${w}</span>`)
+    .join(" ");
 }
 
-function enableClicks() {
-  document.querySelectorAll(".word").forEach(span => {
-    span.addEventListener("click", () => {
-      if (span.classList.contains("clicked")) return;
-
-      span.classList.add("clicked");
-      span.style.fontWeight = "700";
-      span.style.color = "#000";
-
-      const clean = span.textContent.replace(/[^\w']/g, "");
-
-      if (mistakes.includes(clean)) {
-        score++;
-        targetSpeed += boost;
-        scoreEl.textContent = score;
-      }
-    });
-  });
-}
-
-/* ===============================
-   Load section
-   =============================== */
-
+/* Load section */
 async function loadSection() {
-  const q = query(
-    collection(db, "sections"),
-    where("type", "==", "scroll"),
-    where("active", "==", true)
-  );
+  let textToUse = FALLBACK_TEXT;
 
-  const snap = await getDocs(q);
-  const docSnap = snap.docs[Math.floor(Math.random() * snap.docs.length)];
-  const section = docSnap.data();
+  try {
+    const q = query(
+      collection(db, "sections"),
+      where("type", "==", "scroll"),
+      where("active", "==", true)
+    );
 
-  speed = section.baseSpeed;
-  targetSpeed = speed;
-  boost = section.boost;
+    const snap = await getDocs(q);
 
-  mistakes = section.mistakes || [];
+    if (!snap.empty) {
+      const docs = snap.docs;
+      const chosen = docs[Math.floor(Math.random() * docs.length)].data();
+      textToUse = chosen.text;
+      speed = chosen.baseSpeed || speed;
+      targetSpeed = speed;
+      statusEl.textContent = "Scroll started";
+    } else {
+      statusEl.textContent = "No active sections found";
+    }
+  } catch (err) {
+    console.error("Firebase error:", err);
+    statusEl.textContent = "Offline mode";
+  }
 
-  scrollContent.innerHTML = wrapWords(section.text);
-  enableClicks();
+  /* GUARANTEED text injection */
+  scrollText.innerHTML = wrap(textToUse);
 
-  const wrapper = scrollContent.parentElement;
-  position = wrapper.offsetHeight;
-  scrollContent.style.top = position + "px";
+  /* Reset position safely */
+  const wrapper = scrollText.parentElement;
+  position = wrapper.offsetHeight + 40;
+  scrollText.style.top = position + "px";
 }
 
-/* ===============================
-   Scroll loop
-   =============================== */
-
+/* Scroll loop */
 function loop(t) {
-  const delta = (t - lastTime) / 1000;
+  const dt = (t - lastTime) / 1000;
   lastTime = t;
 
-  speed += (targetSpeed - speed) * 0.05;
-  position -= speed * delta;
+  if (!ended) {
+    position -= speed * dt;
+    scrollText.style.top = position + "px";
 
-  scrollContent.style.top = position + "px";
+    const h = scrollText.offsetHeight;
+    if (h > 0 && position + h < 0) {
+      ended = true;
+      endOverlay.classList.remove("hidden");
+    }
+  }
 
   requestAnimationFrame(loop);
 }
 
-/* ===============================
-   Init
-   =============================== */
+/* Continue */
+continueBtn.onclick = () => {
+  window.location.href = "welcome.html";
+};
 
+/* Init */
 loadSection().then(() => {
   requestAnimationFrame(loop);
 });
