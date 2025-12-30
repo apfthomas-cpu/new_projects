@@ -3,31 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <title>Cranium Gymnasium – Scrolling Exercise</title>
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Styles -->
+  <!-- Base layout + background (DO NOT REMOVE) -->
   <link rel="stylesheet" href="css/base.css" />
+
+  <!-- Scroll-specific styles -->
   <link rel="stylesheet" href="css/scroll.css" />
 </head>
 
-<body>
+<body class="page fade">
 
   <div class="app">
     <main class="center-screen">
 
-      <section class="glass-modal">
+      <!-- Main glass panel -->
+      <section class="glass-modal glass-modal-wide scroll-panel">
 
+        <!-- Header -->
         <header class="scroll-header">
           <h1>Cranium Gymnasium</h1>
           <p class="subtitle">Scrolling Accuracy Exercise</p>
         </header>
 
+        <!-- Scroll area -->
         <div class="scroll-wrapper">
           <div id="scroll-text" class="scroll-content">
             Loading...
           </div>
         </div>
 
+        <!-- Footer -->
         <footer class="scroll-footer">
           <div id="status">Loading...</div>
           <div>Score: <span id="score">0</span></div>
@@ -39,14 +46,16 @@
   </div>
 
   <!-- End overlay -->
-  <div id="end-overlay" class="end-overlay">
+  <div id="end-overlay" class="end-overlay hidden">
     <div class="overlay-box">
-      <h2>SECTION COMPLETE</h2>
-      <button id="continue-btn">Continue to next section</button>
+      <h1>SECTION COMPLETE</h1>
+      <button id="continue-btn" class="cranium-button">
+        Continue to next section
+      </button>
     </div>
   </div>
 
-  <!-- Script -->
+  <!-- Scroll logic -->
   <script type="module" src="js/scroll.js"></script>
 
 </body>
