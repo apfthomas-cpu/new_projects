@@ -1,0 +1,91 @@
+/* ==============================
+   Welcome Screen Layout
+   ============================== */
+
+.welcome-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+/* ==============================
+   Glass Panel
+   ============================== */
+
+.welcome-glass {
+  width: 100%;
+  max-width: 520px;
+  padding: 48px 56px;
+
+  background: rgba(20, 25, 30, 0.55);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  border-radius: 28px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+
+  text-align: center;
+  color: #ffffff;
+}
+
+/* ==============================
+   Typography
+   ============================== */
+
+.welcome-glass h1 {
+  margin: 0 0 12px;
+  font-size: 2.4rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.welcome-subtitle {
+  margin: 0 0 32px;
+  font-size: 1.1rem;
+  opacity: 0.85;
+}
+
+.welcome-tagline {
+  margin-top: 26px;
+  font-size: 0.95rem;
+  opacity: 0.75;
+}
+
+/* ==============================
+   ENTER Button
+   ============================== */
+
+.welcome-button {
+  display: inline-block;
+
+  padding: 16px 42px;
+  margin-top: 10px;
+
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+
+  color: #ffffff;
+  text-decoration: none;
+
+  border-radius: 16px;
+  background: linear-gradient(180deg, #8fa3b8, #6c7a88);
+
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+
+  transition: transform 0.15s ease,
+              box-shadow 0.15s ease,
+              background 0.15s ease;
+}
+
+.welcome-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.45);
+  background: linear-gradient(180deg, #9fb2c8, #768594);
+}
+
+.welcome-button:active {
+  transform: translateY(0);
+}
