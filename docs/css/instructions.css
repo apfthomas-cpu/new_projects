@@ -1,0 +1,92 @@
+/* ==============================
+   Instructions Screen Layout
+   ============================== */
+
+.instructions-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+/* ==============================
+   Glass Panel
+   ============================== */
+
+.instructions-glass {
+  width: 100%;
+  max-width: 720px;
+  padding: 52px 60px;
+
+  background: rgba(20, 25, 30, 0.6);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  border-radius: 30px;
+  box-shadow: 0 30px 70px rgba(0,0,0,0.45);
+
+  text-align: center;
+  color: #ffffff;
+}
+
+/* ==============================
+   Typography
+   ============================== */
+
+.section-title {
+  margin: 0 0 8px;
+  font-size: 1.2rem;
+  letter-spacing: 0.25em;
+  opacity: 0.75;
+}
+
+.exercise-title {
+  margin: 0 0 32px;
+  font-size: 2.2rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.instructions-text {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  margin-bottom: 18px;
+  opacity: 0.95;
+}
+
+/* ==============================
+   START Button
+   ============================== */
+
+.start-button {
+  display: inline-block;
+  margin-top: 26px;
+
+  padding: 18px 48px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+
+  color: #ffffff;
+  text-decoration: none;
+
+  border-radius: 18px;
+  background: linear-gradient(180deg, #8fa3b8, #6c7a88);
+
+  box-shadow: 0 14px 32px rgba(0,0,0,0.4);
+
+  transition: transform 0.15s ease,
+              box-shadow 0.15s ease,
+              background 0.15s ease;
+}
+
+.start-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 42px rgba(0,0,0,0.5);
+  background: linear-gradient(180deg, #9fb2c8, #768594);
+}
+
+.start-button:active {
+  transform: translateY(0);
+}
