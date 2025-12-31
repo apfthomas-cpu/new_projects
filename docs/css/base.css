@@ -12,15 +12,17 @@ html, body {
 
 /* GLOBAL BACKGROUND */
 body {
-  background:
-    radial-gradient(circle at top,
-      rgba(255,255,255,0.25),
-      rgba(255,255,255,0.05) 40%),
-    linear-gradient(180deg,
-      #2e3f46 0%,
-      #5d7c8a 50%,
-      #4b5f9c 100%);
   color: #111;
+
+  /* Background image */
+  background-image: url("../media/Background.jpg");
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+
+  /* Fallback colour while image loads */
+  background-color: #1f2933;
 }
 
 /* PAGE CENTERING */
