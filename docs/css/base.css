@@ -1,70 +1,47 @@
-/* ===== Reset ===== */
-*,
-*::before,
-*::after {
+/* RESET */
+* {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
   height: 100%;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-/* ===== Global body + background (LOCKED HERE) ===== */
+/* GLOBAL BACKGROUND */
 body {
-  min-height: 100vh;
-  width: 100%;
-  font-family: "Poppins", system-ui, sans-serif;
+  background:
+    radial-gradient(circle at top,
+      rgba(255,255,255,0.25),
+      rgba(255,255,255,0.05) 40%),
+    linear-gradient(180deg,
+      #2e3f46 0%,
+      #5d7c8a 50%,
+      #4b5f9c 100%);
   color: #111;
-
-  background-color: #3c4a55; /* fallback */
-  background-image: url("../media/Background.jpg");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-attachment: fixed;
-  background-size: cover;
 }
 
-/* ===== App wrapper ===== */
-.app {
+/* PAGE CENTERING */
+.page {
   min-height: 100vh;
-  width: 100%;
-  display: flex;
-}
-
-.center-screen {
-  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(16px, 3vw, 40px);
 }
 
-/* ===== Glass panel ===== */
-.glass-modal {
-  width: 100%;
-  max-width: 1400px;
-  min-height: 80vh;
-  background: rgba(14, 16, 62, 0.551);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+/* GLASS PANEL */
+.glass-panel {
+  width: min(1200px, 94vw);
+  height: min(80vh, 900px);
+  background: rgba(255,255,255,0.78);
   border-radius: 28px;
-  padding: clamp(24px, 4vw, 48px);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+  padding: 2.5rem 3rem;
   display: flex;
   flex-direction: column;
-}
-
-/* ===== Typography ===== */
-h1, h2, h3 {
-  margin: 0;
-  text-align: center;
-}
-
-p {
-  margin: 0;
-  line-height: 1.6;
-  text-align: center;
+  box-shadow:
+    0 25px 60px rgba(0,0,0,0.25),
+    inset 0 1px 0 rgba(255,255,255,0.4);
+  backdrop-filter: blur(12px);
 }

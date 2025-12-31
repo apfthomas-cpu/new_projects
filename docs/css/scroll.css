@@ -1,23 +1,57 @@
-.scroll-wrapper {
-  position: relative;
-  overflow: hidden;
-  padding: 0 6%;
+/* HEADER */
+.scroll-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
 }
 
+.scroll-header h1 {
+  font-size: 2.4rem;
+  font-weight: 700;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  opacity: 0.75;
+  margin-top: 0.25rem;
+}
+
+/* SCROLL AREA */
+.scroll-wrapper {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+
+  /* BLEED / BUFFER */
+  padding: 4rem 6% 3.5rem;
+}
+
+/* SCROLLING TEXT */
 .scroll-content {
   position: absolute;
   left: 0;
   right: 0;
 
-  font-size: 1.6rem;     /* ⬅ ~50% larger */
-  line-height: 1.9;      /* ⬅ more readable */
-  color: #1a1a1a;
+  font-size: 1.6rem;      /* +50% readability */
+  line-height: 1.75;
+  color: #111;
 }
 
+/* WORD INTERACTION */
 .word {
   cursor: pointer;
 }
 
 .word.clicked {
-  font-weight: 700;
+  background: rgba(255,220,0,0.35);
+  border-radius: 6px;
+  padding: 0 4px;
+}
+
+/* FOOTER */
+.scroll-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1rem;
+  opacity: 0.85;
+  margin-top: 1.25rem;
 }

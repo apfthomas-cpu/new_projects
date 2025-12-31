@@ -1,117 +1,80 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
-  getFirestore,
-  collection,
-  getDocs,
-  query,
-  where
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-/* Firebase config */
-const firebaseConfig = {
-  apiKey: "AIzaSyCgjZv-a6t23QqELDSrY8402hZcY_N_Ors",
-  authDomain: "cranium-gymnasium.firebaseapp.com",
-  projectId: "cranium-gymnasium"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-/* DOM */
+// ===============================
+// SAFETY: DOM MUST EXIST
+// ===============================
 const scrollText = document.getElementById("scroll-text");
-const scoreEl = document.getElementById("score");
 const statusEl = document.getElementById("status");
-const endOverlay = document.getElementById("end-overlay");
-const continueBtn = document.getElementById("continue-btn");
+const scoreEl = document.getElementById("score");
 
-/* State */
+if (!scrollText || !statusEl || !scoreEl) {
+  throw new Error("Required DOM elements missing");
+}
+
+// ===============================
+// STATE
+// ===============================
 let position = 0;
-let speed = 25;
-let targetSpeed = 25;
+let speed = 35;
 let lastTime = performance.now();
-let ended = false;
+let score = 0;
 
-/* Safety text (never removed) */
-const FALLBACK_TEXT = `
-This scrolling exercise could not load live content.
+// ===============================
+// TEXT LOAD (TEMP STATIC — SAFE)
+// ===============================
+const text =
+  "Yet beyond philosophy, religion, and science, meaning often emerges in the everyday. " +
+  "It is found in relationships, in the bonds of family and friendship, in acts of kindness, " +
+  "and in the pursuit of passions. Viktor Frankl argued that even in suffering, meaning can be found.";
 
-If you are seeing this message, the system is still working
-and scrolling correctly, but Firebase did not return data.
-
-Please inform your teacher.
-`;
-
-/* Helpers */
-function wrap(text) {
-  return text
-    .trim()
+// ===============================
+// HELPERS
+// ===============================
+function wrapWords(t) {
+  return t
     .split(/\s+/)
     .map(w => `<span class="word">${w}</span>`)
     .join(" ");
 }
 
-/* Load section */
-async function loadSection() {
-  let textToUse = FALLBACK_TEXT;
-
-  try {
-    const q = query(
-      collection(db, "sections"),
-      where("type", "==", "scroll"),
-      where("active", "==", true)
-    );
-
-    const snap = await getDocs(q);
-
-    if (!snap.empty) {
-      const docs = snap.docs;
-      const chosen = docs[Math.floor(Math.random() * docs.length)].data();
-      textToUse = chosen.text;
-      speed = chosen.baseSpeed || speed;
-      targetSpeed = speed;
-      statusEl.textContent = "Scroll started";
-    } else {
-      statusEl.textContent = "No active sections found";
-    }
-  } catch (err) {
-    console.error("Firebase error:", err);
-    statusEl.textContent = "Offline mode";
-  }
-
-  /* GUARANTEED text injection */
-  scrollText.innerHTML = wrap(textToUse);
-
-  /* Reset position safely */
-  const wrapper = scrollText.parentElement;
-  position = wrapper.offsetHeight + 40;
-  scrollText.style.top = position + "px";
+function enableClicks() {
+  document.querySelectorAll(".word").forEach(word => {
+    word.addEventListener("click", () => {
+      if (word.classList.contains("clicked")) return;
+      word.classList.add("clicked");
+      score++;
+      scoreEl.textContent = score;
+    });
+  });
 }
 
-/* Scroll loop */
+// ===============================
+// INIT
+// ===============================
+scrollText.innerHTML = wrapWords(text);
+enableClicks();
+
+statusEl.textContent = "Scroll started";
+
+// start BELOW container
+const wrapper = scrollText.parentElement;
+position = wrapper.offsetHeight;
+scrollText.style.top = position + "px";
+
+// ===============================
+// SCROLL LOOP
+// ===============================
 function loop(t) {
-  const dt = (t - lastTime) / 1000;
+  const delta = (t - lastTime) / 1000;
   lastTime = t;
 
-  if (!ended) {
-    position -= speed * dt;
-    scrollText.style.top = position + "px";
+  position -= speed * delta;
+  scrollText.style.top = position + "px";
 
-    const h = scrollText.offsetHeight;
-    if (h > 0 && position + h < 0) {
-      ended = true;
-      endOverlay.classList.remove("hidden");
-    }
+  if (position + scrollText.offsetHeight < 0) {
+    statusEl.textContent = "Section complete";
+    return;
   }
 
   requestAnimationFrame(loop);
 }
 
-/* Continue */
-continueBtn.onclick = () => {
-  window.location.href = "welcome.html";
-};
-
-/* Init */
-loadSection().then(() => {
-  requestAnimationFrame(loop);
-});
+requestAnimationFrame(loop);
