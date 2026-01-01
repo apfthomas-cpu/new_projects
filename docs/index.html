@@ -2,40 +2,96 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Cranium Gymnasium</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Launch page for Cranium Gymnasium Quiz" />
+  <title>Cranium Gymnasium – Launch</title>
 
-  <!-- IMPORTANT: launch page uses ONLY launch.css -->
-  <link rel="stylesheet" href="css/launch.css" />
+  <style>
+    /* Reset margins and hide scrollbars */
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: black;
+    }
+
+    /* Video takes up full screen */
+    video#launchVideo {
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      object-position: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+
+    /* Optional overlay text/logo */
+    .overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-family: Arial, sans-serif;
+      font-size: 2rem;
+      z-index: 2;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    /* Fade transition and continue button */
+    #continueBtn {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      padding: 12px 24px;
+      font-size: 1.2rem;
+      background: rgba(255, 255, 255, 0.8);
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    #continueBtn.show {
+      opacity: 1;
+    }
+  </style>
 </head>
 
 <body>
-
-  <!-- Fullscreen intro video -->
-  <video
-    id="introVideo"
-    autoplay
-    muted
-    playsinline
-    preload="auto"
-  >
-    <source src="media/St_Philips_Gymnasium.mp4" type="video/mp4" />
-    Your browser does not support the video tag.
+  <!-- Full-screen launch video -->
+  <video id="launchVideo" autoplay muted playsinline>
+    <source 
+      src=https://firebasestorage.googleapis.com/v0/b/cranium-gymnasium.firebasestorage.app/o/ST%20PHILIP'S%20GYMNASIUM.mp4?alt=media&token=8647cffb-7fcb-4e97-9a3c-dc0fed1fa5ab 
+      type="video/mp4">
+    Your browser does not support HTML5 video.
   </video>
 
-  <script>
-    const video = document.getElementById("introVideo");
+  <!-- Continue button that appears after video ends -->
+  <button id="continueBtn">Continue</button>
 
-    // Redirect when the video finishes
+  <script>
+    const video = document.getElementById("launchVideo");
+    const btn = document.getElementById("continueBtn");
+
+    // When the video reaches the end, fade in the button
     video.addEventListener("ended", () => {
-      window.location.href = "welcome.html";
+      btn.classList.add("show");
     });
 
-    // Fallback redirect (in case ended doesn't fire)
-    setTimeout(() => {
-      window.location.href = "welcome.html";
-    }, 15000);
+    // Click to go to the next page (update the destination as needed)
+    btn.addEventListener("click", () => {
+      window.location.href = "welcome.html"; // or your actual welcome page
+    });
   </script>
-
 </body>
 </html>
