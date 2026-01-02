@@ -1,92 +1,416 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Cranium Gymnasium – Admin</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+/* ======================================================
+   RESET + BASE
+   ====================================================== */
 
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/admin.css">
-</head>
-<body class="fade-in">
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
-<main class="admin-panel glass-box">
-  <header class="admin-header">
-    <h1>Cranium Gymnasium – Admin</h1>
-    <p>Manage scrolling texts and pupil attempts</p>
-  </header>
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
 
-  <div class="tabs">
-    <button class="tab active" data-tab="sections">Sections</button>
-    <button class="tab" data-tab="attempts">Attempts Viewer</button>
-  </div>
+body.admin-root {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+               Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: linear-gradient(180deg, #0b1220 0%, #0f1b33 100%);
+  color: #eaf0ff;
+  line-height: 1.4;
+}
 
-  <!-- SECTIONS TAB -->
-  <section id="sections" class="tab-content active">
-    <div class="admin-content">
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+}
 
-      <div class="admin-card">
-        <h2>Create / Edit Scroll Section</h2>
+button {
+  cursor: pointer;
+}
 
-        <label>Title</label>
-        <input type="text" id="titleInput" placeholder="Enter title">
+:focus-visible {
+  outline: 2px solid #5b8cff;
+  outline-offset: 2px;
+}
 
-        <label>Text</label>
-        <textarea id="scrollText" placeholder="Paste or type your scrolling text here..."></textarea>
+/* ======================================================
+   TOP BAR
+   ====================================================== */
 
-        <button id="makeMistakeBtn" class="secondary-btn">
-          Create mistake from selection
-        </button>
+.admin-topbar {
+  height: 64px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
 
-        <div class="row">
-          <div>
-            <label>Base speed</label>
-            <input type="number" id="baseSpeed" value="30">
-          </div>
-          <div>
-            <label>Boost</label>
-            <input type="number" id="boostSpeed" value="8">
-          </div>
-        </div>
+  background: rgba(8, 12, 24, 0.75);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
 
-        <div class="row">
-          <div>
-            <label>Order</label>
-            <input type="number" id="orderInput" value="1">
-          </div>
-          <div>
-            <label>Active</label>
-            <select id="activeInput">
-              <option value="true">Yes</option>
-              <option value="false">No</option>
-            </select>
-          </div>
-        </div>
+.admin-topbar h1 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
 
-        <div class="actions">
-          <button id="saveBtn">Save</button>
-          <button id="resetBtn" class="secondary-btn">Reset</button>
-        </div>
-      </div>
+.admin-topbar .subtitle {
+  font-size: 13px;
+  opacity: 0.6;
+}
 
-      <div class="admin-card">
-        <h2>Existing Sections</h2>
-        <div id="sectionsList"></div>
-      </div>
+/* ======================================================
+   SHELL LAYOUT
+   ====================================================== */
 
-    </div>
-  </section>
+.admin-shell {
+  height: calc(100vh - 64px);
+  display: grid;
+  grid-template-columns: 280px 1fr;
+}
 
-  <!-- ATTEMPTS TAB -->
-  <section id="attempts" class="tab-content">
-    <div class="admin-card">
-      <h2>Pupil Attempts</h2>
-      <div id="attemptsList">No attempts yet.</div>
-    </div>
-  </section>
+/* ======================================================
+   SIDEBAR
+   ====================================================== */
 
-</main>
+.admin-sidebar {
+  background: rgba(6, 10, 22, 0.85);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
 
-<script type="module" src="js/admin.js"></script>
-</body>
-</html>
+.sidebar-header {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sidebar-header h2 {
+  font-size: 14px;
+  margin: 0;
+  opacity: 0.8;
+}
+
+.sidebar-header button {
+  background: rgba(255, 255, 255, 0.08);
+  color: #eaf0ff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 16px;
+}
+
+.sidebar-header button:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+/* ======================================================
+   SECTION LIST
+   ====================================================== */
+
+.section-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.section-item {
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.section-item strong {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.section-item small {
+  display: block;
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.section-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.section-item.active {
+  background: rgba(80, 120, 255, 0.16);
+  border-left-color: #5b8cff;
+}
+
+.section-item .badge {
+  font-size: 11px;
+  padding: 3px 6px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  opacity: 0.8;
+}
+
+.section-item .badge.active {
+  background: rgba(90, 200, 120, 0.25);
+  color: #7dffad;
+}
+
+/* ======================================================
+   MAIN CONTENT
+   ====================================================== */
+
+.admin-main {
+  padding: 28px;
+  overflow-y: auto;
+}
+
+/* ======================================================
+   EMPTY STATE
+   ====================================================== */
+
+.empty-state {
+  max-width: 420px;
+  margin: 120px auto;
+  text-align: center;
+  opacity: 0.65;
+}
+
+.empty-state h2 {
+  margin-bottom: 8px;
+  font-size: 22px;
+}
+
+.empty-state p {
+  font-size: 14px;
+}
+
+/* ======================================================
+   SECTION EDITOR
+   ====================================================== */
+
+.section-editor {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.hidden {
+  display: none;
+}
+
+/* ======================================================
+   EDITOR HEADER
+   ====================================================== */
+
+.editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.editor-header h2 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.editor-header span {
+  font-size: 13px;
+  opacity: 0.6;
+}
+
+/* ======================================================
+   CARDS
+   ====================================================== */
+
+.card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 22px;
+  margin-bottom: 26px;
+}
+
+.card h3 {
+  margin: 0 0 16px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+/* ======================================================
+   FORM ELEMENTS
+   ====================================================== */
+
+label {
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  opacity: 0.65;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  margin-top: 6px;
+  margin-bottom: 14px;
+  padding: 10px 12px;
+
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+
+  color: #ffffff;
+  font-size: 14px;
+}
+
+textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #5b8cff;
+  outline: none;
+}
+
+/* ======================================================
+   GRID HELPERS
+   ====================================================== */
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+/* ======================================================
+   BUTTONS
+   ====================================================== */
+
+button {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 14px;
+  background: #5b8cff;
+  color: white;
+  transition: transform 0.05s ease, background 0.15s ease;
+}
+
+button:hover {
+  background: #6a98ff;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+button.secondary {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+button.secondary:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+button.danger {
+  background: #c44949;
+}
+
+button.danger:hover {
+  background: #d85c5c;
+}
+
+/* ======================================================
+   QUESTION LIST
+   ====================================================== */
+
+.question-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.question-item {
+  padding: 12px 14px;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.question-item span {
+  font-size: 14px;
+}
+
+.question-item .actions {
+  display: flex;
+  gap: 8px;
+}
+
+.icon-btn {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.icon-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.icon-btn.danger {
+  background: rgba(255, 80, 80, 0.25);
+}
+
+/* ======================================================
+   SCROLLBAR (SUBTLE)
+   ====================================================== */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ======================================================
+   RESPONSIVE (OPTIONAL)
+   ====================================================== */
+
+@media (max-width: 900px) {
+  .admin-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-sidebar {
+    display: none;
+  }
+}
