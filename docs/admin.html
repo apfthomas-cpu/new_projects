@@ -111,6 +111,27 @@
   </div>
 
   <script type="module" src="js/admin.js"></script>
+  <!-- QUESTION MODAL -->
+<div id="questionModal" class="modal hidden">
+  <div class="modal-card">
+    <h3 id="questionModalTitle">Add Question</h3>
+
+    <label>Question Text</label>
+    <input id="questionTextInput" type="text">
+
+    <label>Correct Answer</label>
+    <input id="correctAnswerInput" type="text">
+
+    <label>Mistake Words (comma separated)</label>
+    <input id="mistakesInput" type="text">
+
+    <div class="actions">
+      <button id="saveQuestionBtn">Save</button>
+      <button class="secondary" id="cancelQuestionBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
 </body>
 
 </html>
