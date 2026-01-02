@@ -34,11 +34,11 @@ const db = getFirestore(app);
 const sectionsList = document.getElementById("sectionsList");
 const addSectionBtn = document.getElementById("addSectionBtn");
 
-// Main
+// Main editor
 const emptyState = document.getElementById("emptyState");
 const sectionEditor = document.getElementById("sectionEditor");
 
-// Section editor
+// Section editor fields
 const sectionTitleEl = document.getElementById("sectionTitle");
 const sectionMetaEl = document.getElementById("sectionMeta");
 
@@ -65,6 +65,16 @@ const mistakesInput = document.getElementById("mistakesInput");
 const saveQuestionBtn = document.getElementById("saveQuestionBtn");
 const cancelQuestionBtn = document.getElementById("cancelQuestionBtn");
 
+// Performance dashboard
+const performanceSectionFilter =
+  document.getElementById("performanceSectionFilter");
+const pupilFilter = document.getElementById("pupilFilter");
+
+const avgScoreEl = document.getElementById("avgScore");
+const attemptCountEl = document.getElementById("attemptCount");
+const attemptsList = document.getElementById("attemptsList");
+const mistakesList = document.getElementById("mistakesList");
+
 /* ======================================================
    STATE
    ====================================================== */
@@ -77,6 +87,8 @@ let editingQuestionId = null;
    ====================================================== */
 
 loadSections();
+loadPerformanceSections();
+loadAttempts();
 
 /* ======================================================
    SECTIONS
@@ -105,7 +117,6 @@ async function loadSections() {
     `;
 
     el.addEventListener("click", () => selectSection(docSnap.id));
-
     sectionsList.appendChild(el);
   });
 }
@@ -117,8 +128,7 @@ async function selectSection(id) {
     el.classList.toggle("active", el.dataset.id === id)
   );
 
-  const ref = doc(db, "sections", id);
-  const snap = await getDoc(ref);
+  const snap = await getDoc(doc(db, "sections", id));
   const data = snap.data();
 
   emptyState.classList.add("hidden");
@@ -136,11 +146,11 @@ async function selectSection(id) {
 }
 
 /* ======================================================
-   CREATE SECTION
+   CREATE / SAVE / DELETE SECTION
    ====================================================== */
 
 addSectionBtn.addEventListener("click", async () => {
-  const docRef = await addDoc(collection(db, "sections"), {
+  const ref = await addDoc(collection(db, "sections"), {
     title: "New Section",
     text: "",
     baseSpeed: 30,
@@ -151,12 +161,8 @@ addSectionBtn.addEventListener("click", async () => {
   });
 
   await loadSections();
-  selectSection(docRef.id);
+  selectSection(ref.id);
 });
-
-/* ======================================================
-   SAVE SECTION
-   ====================================================== */
 
 saveBtn.addEventListener("click", async () => {
   if (!selectedSectionId) return;
@@ -174,13 +180,8 @@ saveBtn.addEventListener("click", async () => {
   loadSections();
 });
 
-/* ======================================================
-   DELETE SECTION
-   ====================================================== */
-
 deleteSectionBtn.addEventListener("click", async () => {
   if (!selectedSectionId) return;
-
   if (!confirm("Delete this section and all its questions?")) return;
 
   await deleteDoc(doc(db, "sections", selectedSectionId));
@@ -226,10 +227,6 @@ async function loadQuestions(sectionId) {
   sectionMetaEl.textContent = `${count} question${count !== 1 ? "s" : ""}`;
 }
 
-/* ======================================================
-   QUESTION MODAL
-   ====================================================== */
-
 addQuestionBtn.addEventListener("click", () => {
   editingQuestionId = null;
   modalTitle.textContent = "Add Question";
@@ -251,15 +248,9 @@ questionsList.addEventListener("click", async (e) => {
   if (editId) {
     editingQuestionId = editId;
 
-    const ref = doc(
-      db,
-      "sections",
-      selectedSectionId,
-      "questions",
-      editId
+    const snap = await getDoc(
+      doc(db, "sections", selectedSectionId, "questions", editId)
     );
-
-    const snap = await getDoc(ref);
     const d = snap.data();
 
     questionTextInput.value = d.text;
@@ -270,10 +261,6 @@ questionsList.addEventListener("click", async (e) => {
     openModal();
   }
 });
-
-/* ======================================================
-   SAVE QUESTION
-   ====================================================== */
 
 saveQuestionBtn.addEventListener("click", async () => {
   const data = {
@@ -299,10 +286,7 @@ saveQuestionBtn.addEventListener("click", async () => {
   } else {
     await addDoc(
       collection(db, "sections", selectedSectionId, "questions"),
-      {
-        ...data,
-        created: Date.now()
-      }
+      { ...data, created: Date.now() }
     );
   }
 
@@ -326,3 +310,80 @@ function closeModal() {
 }
 
 cancelQuestionBtn.addEventListener("click", closeModal);
+
+/* ======================================================
+   PERFORMANCE DASHBOARD
+   ====================================================== */
+
+async function loadPerformanceSections() {
+  const snap = await getDocs(collection(db, "sections"));
+  snap.forEach(docSnap => {
+    const opt = document.createElement("option");
+    opt.value = docSnap.id;
+    opt.textContent = docSnap.data().title;
+    performanceSectionFilter.appendChild(opt);
+  });
+}
+
+async function loadAttempts() {
+  attemptsList.innerHTML = "";
+  mistakesList.innerHTML = "";
+
+  const sectionFilter = performanceSectionFilter.value;
+  const pupilText = pupilFilter.value.toLowerCase();
+
+  const snap = await getDocs(collection(db, "attempts"));
+
+  let totalScore = 0;
+  let count = 0;
+  const mistakeMap = {};
+
+  snap.forEach(a => {
+    const d = a.data();
+
+    if (sectionFilter !== "all" && d.sectionId !== sectionFilter) return;
+    if (pupilText && !d.pupilName.toLowerCase().includes(pupilText)) return;
+
+    count++;
+    totalScore += d.score;
+
+    (d.mistakes || []).forEach(word => {
+      mistakeMap[word] = (mistakeMap[word] || 0) + 1;
+    });
+
+    const row = document.createElement("div");
+    row.className = "attempt-row";
+    row.innerHTML = `
+      <div>
+        <strong>${d.pupilName}</strong>
+        <span> — ${new Date(d.created).toLocaleDateString()}</span>
+      </div>
+      <div>${d.score}%</div>
+    `;
+
+    attemptsList.appendChild(row);
+  });
+
+  avgScoreEl.textContent = count
+    ? Math.round(totalScore / count) + "%"
+    : "–";
+
+  attemptCountEl.textContent = count;
+
+  renderMistakes(mistakeMap);
+}
+
+function renderMistakes(map) {
+  Object.entries(map)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10)
+    .forEach(([word, count]) => {
+      const chip = document.createElement("span");
+      chip.className = "mistake-chip";
+      chip.textContent = `${word} (${count})`;
+      mistakesList.appendChild(chip);
+    });
+}
+
+performanceSectionFilter.addEventListener("change", loadAttempts);
+pupilFilter.addEventListener("input", loadAttempts);
