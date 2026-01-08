@@ -3,116 +3,79 @@
 <head>
   <meta charset="UTF-8" />
   <title>Cranium Gymnasium – Admin</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <link rel="stylesheet" href="css/base.css" />
-  <link rel="stylesheet" href="css/admin.css" />
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/admin.css">
 </head>
 
 <body class="page">
-  <main class="admin-page">
-    <section class="admin-shell">
 
-      <!-- LEFT: section list -->
-      <aside class="admin-sidebar">
-        <div class="admin-sidebar-header">
-          <h1>Sections</h1>
-          <button id="newSectionBtn" class="btn-small">+ New Section</button>
+  <div class="app">
+    <main class="center-screen">
+
+      <section class="glass-modal glass-modal-wide admin-panel">
+
+        <header class="admin-header">
+          <h1>Cranium Gymnasium – Admin</h1>
+          <p>Manage scrolling sections</p>
+        </header>
+
+        <div class="tabs">
+          <button class="tab active" data-tab="sections">Scroll Sections</button>
         </div>
-        <div id="sectionsList" class="sections-list">
-          <!-- Filled by JS -->
-        </div>
-      </aside>
 
-      <!-- RIGHT: section editor -->
-      <section class="admin-main">
-        <h2 id="editorTitle">No section selected</h2>
+        <section id="sections" class="tab-content active">
+          <div class="admin-content">
 
-        <form id="sectionForm" class="section-form">
-          <input type="hidden" id="sectionId" />
+            <div class="admin-card">
+              <h2>Create / Edit Scroll Section</h2>
 
-          <div class="field-row">
-            <div class="field">
-              <label for="sectionTitle">Title</label>
-              <input id="sectionTitle" type="text" placeholder="Section title" />
-            </div>
+              <label>Title</label>
+              <input id="titleInput" type="text">
 
-            <div class="field">
-              <label for="sectionType">Type</label>
-              <select id="sectionType">
-                <option value="scroll">Scrolling text</option>
-                <option value="algebra">Algebra MCQ</option>
-              </select>
-            </div>
-          </div>
+              <label>Instructions (each line becomes a bullet)</label>
+              <textarea id="instrInput" placeholder="Line 1&#10;Line 2&#10;Line 3"></textarea>
 
-          <div class="field-row">
-            <div class="field">
-              <label for="sectionOrder">Order</label>
-              <input id="sectionOrder" type="number" value="1" />
-            </div>
-            <div class="field checkbox-field">
-              <label>
-                <input id="sectionActive" type="checkbox" checked />
-                Active
-              </label>
-            </div>
-          </div>
-
-          <div class="field">
-            <label for="instructionsText">Instructions (one sentence per line)</label>
-            <textarea id="instructionsText" rows="5"
-              placeholder="Write each instruction line on its own line"></textarea>
-          </div>
-
-          <button type="button" id="saveSectionBtn" class="btn-primary">
-            Save Section
-          </button>
-        </form>
-
-        <!-- Algebra questions block -->
-        <section id="algebraBlock" class="algebra-block hidden">
-          <h3>Algebra Questions</h3>
-
-          <p class="hint">
-            Images are assumed to live in <code>media/algebra/</code>.
-            Enter filenames like <code>1.jpg</code>, <code>2.jpg</code>, etc.
-          </p>
-
-          <form id="questionForm" class="question-form">
-            <div class="field-row">
-              <div class="field">
-                <label for="qImage">Image filename</label>
-                <input id="qImage" type="text" placeholder="e.g. 1.jpg" />
+              <label>Text (click words to mark mistakes)</label>
+              <div class="scroll-editor">
+                <textarea id="textInput"></textarea>
+                <div id="preview" class="preview"></div>
               </div>
-              <div class="field">
-                <label for="qTime">Time (seconds, optional)</label>
-                <input id="qTime" type="number" min="1" placeholder="8" />
+
+              <p><strong>Mistakes:</strong> <span id="mistakeCount">0</span></p>
+
+              <div class="row">
+                <div>
+                  <label>Order</label>
+                  <input id="orderInput" type="number" value="1">
+                </div>
+                <div>
+                  <label>Active</label>
+                  <select id="activeInput">
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                  </select>
+                </div>
               </div>
-              <div class="field">
-                <label for="qCorrect">Correct answer</label>
-                <select id="qCorrect">
-                  <option value="A">A</option>
-                  <option value="B">B</option>
-                  <option value="C">C</option>
-                  <option value="D">D</option>
-                </select>
+
+              <div class="actions">
+                <button id="saveBtn">Save</button>
+                <button id="resetBtn" class="secondary-btn">Reset</button>
               </div>
             </div>
 
-            <button type="button" id="addQuestionBtn" class="btn-small">
-              + Add Question
-            </button>
-          </form>
+            <div class="admin-card">
+              <h2>Existing Sections</h2>
+              <div id="sectionsList"></div>
+            </div>
 
-          <div id="questionsList" class="questions-list">
-            <!-- Filled by JS -->
           </div>
         </section>
 
       </section>
-    </section>
-  </main>
+    </main>
+  </div>
 
   <script type="module" src="js/admin.js"></script>
 </body>
