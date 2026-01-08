@@ -1,24 +1,17 @@
-/* ======================================================
-   FIREBASE SETUP
-   ====================================================== */
-
-import { initializeApp } from
-  "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getFirestore,
   collection,
   getDocs,
-  addDoc,
-  updateDoc,
-  deleteDoc,
+  getDoc,
   doc,
-  getDoc
-} from
-  "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  addDoc,
+  updateDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+/* 🔥 Firebase config (your existing project) */
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
+  apiKey: "AIzaSyCgjZv-a6t23QqELDSrY8402hZcY_N_Ors",
   authDomain: "cranium-gymnasium.firebaseapp.com",
   projectId: "cranium-gymnasium"
 };
@@ -26,364 +19,256 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-/* ======================================================
-   DOM ELEMENTS
-   ====================================================== */
+const sectionsCol = collection(db, "sections");
 
-// Sidebar
-const sectionsList = document.getElementById("sectionsList");
-const addSectionBtn = document.getElementById("addSectionBtn");
+/* DOM references */
+const newSectionBtn   = document.getElementById("newSectionBtn");
+const sectionsListEl  = document.getElementById("sectionsList");
 
-// Main editor
-const emptyState = document.getElementById("emptyState");
-const sectionEditor = document.getElementById("sectionEditor");
+const sectionIdInput   = document.getElementById("sectionId");
+const sectionTitle     = document.getElementById("sectionTitle");
+const sectionType      = document.getElementById("sectionType");
+const sectionOrder     = document.getElementById("sectionOrder");
+const sectionActive    = document.getElementById("sectionActive");
+const instructionsText = document.getElementById("instructionsText");
+const saveSectionBtn   = document.getElementById("saveSectionBtn");
+const editorTitleEl    = document.getElementById("editorTitle");
 
-// Section editor fields
-const sectionTitleEl = document.getElementById("sectionTitle");
-const sectionMetaEl = document.getElementById("sectionMeta");
+const algebraBlock      = document.getElementById("algebraBlock");
+const qImageInput       = document.getElementById("qImage");
+const qTimeInput        = document.getElementById("qTime");
+const qCorrectSelect    = document.getElementById("qCorrect");
+const addQuestionBtn    = document.getElementById("addQuestionBtn");
+const questionsListEl   = document.getElementById("questionsList");
 
-const titleInput = document.getElementById("titleInput");
-const scrollText = document.getElementById("scrollText");
-const baseSpeed = document.getElementById("baseSpeed");
-const boostSpeed = document.getElementById("boostSpeed");
-const orderInput = document.getElementById("orderInput");
-const activeInput = document.getElementById("activeInput");
+/* Local state */
+let currentSectionId = null;
+let currentQuestions = []; // array of { img, time, correct }
 
-const saveBtn = document.getElementById("saveBtn");
-const deleteSectionBtn = document.getElementById("deleteSectionBtn");
+// ===========================
+// Helpers
+// ===========================
 
-// Questions
-const questionsList = document.getElementById("questionsList");
-const addQuestionBtn = document.getElementById("addQuestionBtn");
-
-// Question modal
-const modal = document.getElementById("questionModal");
-const modalTitle = document.getElementById("questionModalTitle");
-const questionTextInput = document.getElementById("questionTextInput");
-const correctAnswerInput = document.getElementById("correctAnswerInput");
-const mistakesInput = document.getElementById("mistakesInput");
-const saveQuestionBtn = document.getElementById("saveQuestionBtn");
-const cancelQuestionBtn = document.getElementById("cancelQuestionBtn");
-
-// Performance dashboard
-const performanceSectionFilter =
-  document.getElementById("performanceSectionFilter");
-const pupilFilter = document.getElementById("pupilFilter");
-
-const avgScoreEl = document.getElementById("avgScore");
-const attemptCountEl = document.getElementById("attemptCount");
-const attemptsList = document.getElementById("attemptsList");
-const mistakesList = document.getElementById("mistakesList");
-
-/* ======================================================
-   STATE
-   ====================================================== */
-
-let selectedSectionId = null;
-let editingQuestionId = null;
-
-/* ======================================================
-   INIT
-   ====================================================== */
-
-loadSections();
-loadPerformanceSections();
-loadAttempts();
-
-/* ======================================================
-   SECTIONS
-   ====================================================== */
-
-async function loadSections() {
-  sectionsList.innerHTML = "";
-
-  const snap = await getDocs(collection(db, "sections"));
-
-  snap.forEach(docSnap => {
-    const data = docSnap.data();
-
-    const el = document.createElement("div");
-    el.className = "section-item";
-    el.dataset.id = docSnap.id;
-
-    el.innerHTML = `
-      <div>
-        <strong>${data.title || "Untitled"}</strong>
-        <small>${data.active ? "Active" : "Inactive"}</small>
-      </div>
-      <span class="badge ${data.active ? "active" : ""}">
-        ${data.active ? "On" : "Off"}
-      </span>
-    `;
-
-    el.addEventListener("click", () => selectSection(docSnap.id));
-    sectionsList.appendChild(el);
-  });
+function clearSectionForm() {
+  sectionIdInput.value = "";
+  sectionTitle.value = "";
+  sectionType.value = "scroll";
+  sectionOrder.value = 1;
+  sectionActive.checked = true;
+  instructionsText.value = "";
+  currentSectionId = null;
+  currentQuestions = [];
+  renderQuestionsList();
+  editorTitleEl.textContent = "New Section";
+  showAlgebraBlockIfNeeded();
 }
 
-async function selectSection(id) {
-  selectedSectionId = id;
-
-  [...sectionsList.children].forEach(el =>
-    el.classList.toggle("active", el.dataset.id === id)
-  );
-
-  const snap = await getDoc(doc(db, "sections", id));
-  const data = snap.data();
-
-  emptyState.classList.add("hidden");
-  sectionEditor.classList.remove("hidden");
-
-  sectionTitleEl.textContent = data.title;
-  titleInput.value = data.title || "";
-  scrollText.value = data.text || "";
-  baseSpeed.value = data.baseSpeed ?? 30;
-  boostSpeed.value = data.boost ?? 8;
-  orderInput.value = data.order ?? 1;
-  activeInput.value = data.active ? "true" : "false";
-
-  await loadQuestions(id);
-}
-
-/* ======================================================
-   CREATE / SAVE / DELETE SECTION
-   ====================================================== */
-
-addSectionBtn.addEventListener("click", async () => {
-  const ref = await addDoc(collection(db, "sections"), {
-    title: "New Section",
-    text: "",
-    baseSpeed: 30,
-    boost: 8,
-    order: 1,
-    active: true,
-    created: Date.now()
-  });
-
-  await loadSections();
-  selectSection(ref.id);
-});
-
-saveBtn.addEventListener("click", async () => {
-  if (!selectedSectionId) return;
-
-  await updateDoc(doc(db, "sections", selectedSectionId), {
-    title: titleInput.value.trim(),
-    text: scrollText.value,
-    baseSpeed: Number(baseSpeed.value),
-    boost: Number(boostSpeed.value),
-    order: Number(orderInput.value),
-    active: activeInput.value === "true"
-  });
-
-  sectionTitleEl.textContent = titleInput.value;
-  loadSections();
-});
-
-deleteSectionBtn.addEventListener("click", async () => {
-  if (!selectedSectionId) return;
-  if (!confirm("Delete this section and all its questions?")) return;
-
-  await deleteDoc(doc(db, "sections", selectedSectionId));
-
-  selectedSectionId = null;
-  sectionEditor.classList.add("hidden");
-  emptyState.classList.remove("hidden");
-
-  loadSections();
-});
-
-/* ======================================================
-   QUESTIONS
-   ====================================================== */
-
-async function loadQuestions(sectionId) {
-  questionsList.innerHTML = "";
-
-  const snap = await getDocs(
-    collection(db, "sections", sectionId, "questions")
-  );
-
-  let count = 0;
-
-  snap.forEach(q => {
-    count++;
-    const d = q.data();
-
-    const el = document.createElement("div");
-    el.className = "question-item";
-
-    el.innerHTML = `
-      <span>${d.text}</span>
-      <div class="actions">
-        <button class="icon-btn" data-edit="${q.id}">✏️</button>
-        <button class="icon-btn danger" data-delete="${q.id}">🗑️</button>
-      </div>
-    `;
-
-    questionsList.appendChild(el);
-  });
-
-  sectionMetaEl.textContent = `${count} question${count !== 1 ? "s" : ""}`;
-}
-
-addQuestionBtn.addEventListener("click", () => {
-  editingQuestionId = null;
-  modalTitle.textContent = "Add Question";
-  openModal();
-});
-
-questionsList.addEventListener("click", async (e) => {
-  const editId = e.target.dataset.edit;
-  const deleteId = e.target.dataset.delete;
-
-  if (deleteId) {
-    if (!confirm("Delete this question?")) return;
-    await deleteDoc(
-      doc(db, "sections", selectedSectionId, "questions", deleteId)
-    );
-    loadQuestions(selectedSectionId);
+function showAlgebraBlockIfNeeded() {
+  if (sectionType.value === "algebra") {
+    algebraBlock.classList.remove("hidden");
+  } else {
+    algebraBlock.classList.add("hidden");
   }
+}
 
-  if (editId) {
-    editingQuestionId = editId;
+function renderSectionsList(sections) {
+  sectionsListEl.innerHTML = "";
+  sections.forEach(sec => {
+    const div = document.createElement("div");
+    div.className = "section-item";
+    if (!sec.active) div.classList.add("inactive");
+    if (sec.id === currentSectionId) div.classList.add("active");
 
-    const snap = await getDoc(
-      doc(db, "sections", selectedSectionId, "questions", editId)
-    );
-    const d = snap.data();
+    const titleSpan = document.createElement("span");
+    titleSpan.textContent = sec.title || "(untitled)";
 
-    questionTextInput.value = d.text;
-    correctAnswerInput.value = d.correctAnswer;
-    mistakesInput.value = (d.mistakes || []).join(", ");
+    const metaSpan = document.createElement("span");
+    metaSpan.innerHTML =
+      `<small>${sec.type || "?"} · order ${sec.order ?? "?"}</small>`;
 
-    modalTitle.textContent = "Edit Question";
-    openModal();
-  }
-});
+    div.appendChild(titleSpan);
+    div.appendChild(metaSpan);
 
-saveQuestionBtn.addEventListener("click", async () => {
-  const data = {
-    text: questionTextInput.value.trim(),
-    correctAnswer: correctAnswerInput.value.trim(),
-    mistakes: mistakesInput.value
-      .split(",")
-      .map(w => w.trim())
-      .filter(Boolean),
-    updated: Date.now()
-  };
+    div.onclick = () => loadSection(sec.id);
 
-  if (!data.text || !data.correctAnswer) {
-    alert("Question and correct answer required");
+    sectionsListEl.appendChild(div);
+  });
+}
+
+function renderQuestionsList() {
+  questionsListEl.innerHTML = "";
+  if (!currentQuestions || currentQuestions.length === 0) {
+    questionsListEl.innerHTML = "<p>No questions yet.</p>";
     return;
   }
 
-  if (editingQuestionId) {
-    await updateDoc(
-      doc(db, "sections", selectedSectionId, "questions", editingQuestionId),
-      data
-    );
-  } else {
-    await addDoc(
-      collection(db, "sections", selectedSectionId, "questions"),
-      { ...data, created: Date.now() }
-    );
+  currentQuestions.forEach((q, index) => {
+    const row = document.createElement("div");
+    row.className = "question-row";
+
+    const leftSpan = document.createElement("span");
+    leftSpan.textContent = `${index + 1}. ${q.img} (time: ${q.time || "base"}s)`;
+
+    const rightSpan = document.createElement("span");
+    rightSpan.textContent = `Correct: ${q.correct}`;
+
+    const delBtn = document.createElement("button");
+    delBtn.textContent = "Delete";
+    delBtn.className = "btn-small";
+    delBtn.style.marginLeft = "8px";
+    delBtn.onclick = () => {
+      currentQuestions.splice(index, 1);
+      renderQuestionsList();
+    };
+
+    const rightWrap = document.createElement("span");
+    rightWrap.appendChild(rightSpan);
+    rightWrap.appendChild(delBtn);
+
+    row.appendChild(leftSpan);
+    row.appendChild(rightWrap);
+
+    questionsListEl.appendChild(row);
+  });
+}
+
+// ===========================
+// Firebase I/O
+// ===========================
+
+async function loadAllSections() {
+  const snap = await getDocs(sectionsCol);
+  const sections = [];
+  snap.forEach(docSnap => {
+    const d = docSnap.data();
+    sections.push({
+      id: docSnap.id,
+      title: d.title,
+      type: d.type,
+      order: d.order,
+      active: d.active
+    });
+  });
+
+  sections.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  renderSectionsList(sections);
+}
+
+async function loadSection(id) {
+  const ref = doc(db, "sections", id);
+  const snap = await getDoc(ref);
+  if (!snap.exists()) return;
+
+  const d = snap.data();
+  currentSectionId = id;
+
+  sectionIdInput.value = id;
+  sectionTitle.value = d.title || "";
+  sectionType.value = d.type || "scroll";
+  sectionOrder.value = d.order ?? 1;
+  sectionActive.checked = !!d.active;
+
+  const instr = d.instructions || [];
+  instructionsText.value = instr.join("\n");
+
+  currentQuestions = Array.isArray(d.questions) ? d.questions : [];
+  renderQuestionsList();
+  showAlgebraBlockIfNeeded();
+
+  editorTitleEl.textContent = `${d.title || "(untitled)"} (${d.type || ""})`;
+
+  // reload sections list to highlight current
+  await loadAllSections();
+}
+
+async function saveSection() {
+  const title = sectionTitle.value.trim();
+  const type  = sectionType.value;
+
+  if (!title) {
+    alert("Title is required.");
+    return;
   }
 
-  closeModal();
-  loadQuestions(selectedSectionId);
+  const order = Number(sectionOrder.value) || 1;
+  const active = sectionActive.checked;
+  const instructions = instructionsText.value
+    .split("\n")
+    .map(l => l.trim())
+    .filter(Boolean);
+
+  const data = {
+    title,
+    type,
+    order,
+    active,
+    instructions,
+    questions: type === "algebra" ? currentQuestions : [],
+    updatedAt: Date.now()
+  };
+
+  if (currentSectionId) {
+    const ref = doc(db, "sections", currentSectionId);
+    await updateDoc(ref, data);
+  } else {
+    data.createdAt = Date.now();
+    const ref = await addDoc(sectionsCol, data);
+    currentSectionId = ref.id;
+    sectionIdInput.value = ref.id;
+  }
+
+  await loadAllSections();
+  alert("Section saved.");
+}
+
+// ===========================
+// Event wiring
+// ===========================
+
+newSectionBtn.addEventListener("click", () => {
+  clearSectionForm();
+  loadAllSections();
 });
 
-/* ======================================================
-   MODAL HELPERS
-   ====================================================== */
+sectionType.addEventListener("change", () => {
+  showAlgebraBlockIfNeeded();
+});
 
-function openModal() {
-  modal.classList.remove("hidden");
-}
-
-function closeModal() {
-  modal.classList.add("hidden");
-  questionTextInput.value = "";
-  correctAnswerInput.value = "";
-  mistakesInput.value = "";
-}
-
-cancelQuestionBtn.addEventListener("click", closeModal);
-
-/* ======================================================
-   PERFORMANCE DASHBOARD
-   ====================================================== */
-
-async function loadPerformanceSections() {
-  const snap = await getDocs(collection(db, "sections"));
-  snap.forEach(docSnap => {
-    const opt = document.createElement("option");
-    opt.value = docSnap.id;
-    opt.textContent = docSnap.data().title;
-    performanceSectionFilter.appendChild(opt);
+saveSectionBtn.addEventListener("click", () => {
+  saveSection().catch(err => {
+    console.error(err);
+    alert("Failed to save section – check console.");
   });
-}
+});
 
-async function loadAttempts() {
-  attemptsList.innerHTML = "";
-  mistakesList.innerHTML = "";
+addQuestionBtn.addEventListener("click", () => {
+  const img = qImageInput.value.trim();
+  const timeVal = qTimeInput.value.trim();
+  const correct = qCorrectSelect.value;
 
-  const sectionFilter = performanceSectionFilter.value;
-  const pupilText = pupilFilter.value.toLowerCase();
+  if (!img) {
+    alert("Please enter an image filename.");
+    return;
+  }
 
-  const snap = await getDocs(collection(db, "attempts"));
+  const q = {
+    img,
+    correct
+  };
+  if (timeVal) {
+    q.time = Number(timeVal);
+  }
 
-  let totalScore = 0;
-  let count = 0;
-  const mistakeMap = {};
+  currentQuestions.push(q);
+  renderQuestionsList();
 
-  snap.forEach(a => {
-    const d = a.data();
+  qImageInput.value = "";
+  qTimeInput.value = "";
+  qCorrectSelect.value = "A";
+});
 
-    if (sectionFilter !== "all" && d.sectionId !== sectionFilter) return;
-    if (pupilText && !d.pupilName.toLowerCase().includes(pupilText)) return;
-
-    count++;
-    totalScore += d.score;
-
-    (d.mistakes || []).forEach(word => {
-      mistakeMap[word] = (mistakeMap[word] || 0) + 1;
-    });
-
-    const row = document.createElement("div");
-    row.className = "attempt-row";
-    row.innerHTML = `
-      <div>
-        <strong>${d.pupilName}</strong>
-        <span> — ${new Date(d.created).toLocaleDateString()}</span>
-      </div>
-      <div>${d.score}%</div>
-    `;
-
-    attemptsList.appendChild(row);
-  });
-
-  avgScoreEl.textContent = count
-    ? Math.round(totalScore / count) + "%"
-    : "–";
-
-  attemptCountEl.textContent = count;
-
-  renderMistakes(mistakeMap);
-}
-
-function renderMistakes(map) {
-  Object.entries(map)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 10)
-    .forEach(([word, count]) => {
-      const chip = document.createElement("span");
-      chip.className = "mistake-chip";
-      chip.textContent = `${word} (${count})`;
-      mistakesList.appendChild(chip);
-    });
-}
-
-performanceSectionFilter.addEventListener("change", loadAttempts);
-pupilFilter.addEventListener("input", loadAttempts);
+// Initial load
+loadAllSections().catch(err => {
+  console.error("Failed to load sections:", err);
+});
+clearSectionForm();

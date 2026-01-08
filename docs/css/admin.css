@@ -1,437 +1,203 @@
-/* ======================================================
-   RESET + BASE
-   ====================================================== */
+/* Layout for admin */
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-}
-
-body.admin-root {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-               Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  background: linear-gradient(180deg, #0b1220 0%, #0f1b33 100%);
-  color: #eaf0ff;
-  line-height: 1.4;
-}
-
-button,
-input,
-textarea,
-select {
-  font-family: inherit;
-}
-
-button {
-  cursor: pointer;
-}
-
-:focus-visible {
-  outline: 2px solid #5b8cff;
-  outline-offset: 2px;
-}
-
-/* ======================================================
-   TOP BAR
-   ====================================================== */
-
-.admin-topbar {
-  height: 64px;
-  padding: 0 24px;
+.admin-page {
+  min-height: 100vh;
   display: flex;
   align-items: center;
-  gap: 14px;
-
-  background: rgba(8, 12, 24, 0.75);
-  backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  justify-content: center;
+  padding: 24px;
 }
-
-.admin-topbar h1 {
-  font-size: 18px;
-  font-weight: 600;
-  margin: 0;
-}
-
-.admin-topbar .subtitle {
-  font-size: 13px;
-  opacity: 0.6;
-}
-
-/* ======================================================
-   SHELL LAYOUT
-   ====================================================== */
 
 .admin-shell {
-  height: calc(100vh - 64px);
-  display: grid;
-  grid-template-columns: 280px 1fr;
-}
-
-/* ======================================================
-   SIDEBAR
-   ====================================================== */
-
-.admin-sidebar {
-  background: rgba(6, 10, 22, 0.85);
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  width: min(1200px, 98vw);
+  min-height: 70vh;
+  background: rgba(255,255,255,0.96);
+  border-radius: 26px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.35);
   display: flex;
-  flex-direction: column;
   overflow: hidden;
 }
 
-.sidebar-header {
-  padding: 16px;
+/* Sidebar */
+
+.admin-sidebar {
+  width: 30%;
+  min-width: 260px;
+  border-right: 1px solid #dde1e7;
+  padding: 18px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+}
+
+.admin-sidebar-header {
+  display: flex;
   justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
 }
 
-.sidebar-header h2 {
-  font-size: 14px;
+.admin-sidebar-header h1 {
+  font-size: 1.3rem;
   margin: 0;
-  opacity: 0.8;
 }
 
-.sidebar-header button {
-  background: rgba(255, 255, 255, 0.08);
-  color: #eaf0ff;
-  border: none;
-  border-radius: 6px;
-  padding: 6px 10px;
-  font-size: 16px;
-}
-
-.sidebar-header button:hover {
-  background: rgba(255, 255, 255, 0.14);
-}
-
-/* ======================================================
-   SECTION LIST
-   ====================================================== */
-
-.section-list {
+.sections-list {
   flex: 1;
   overflow-y: auto;
+  margin-top: 8px;
 }
 
 .section-item {
-  padding: 14px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-
+  padding: 8px 10px;
+  border-radius: 10px;
   cursor: pointer;
-  border-left: 3px solid transparent;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  margin-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
 }
 
-.section-item strong {
-  font-size: 14px;
+.section-item span:first-child {
   font-weight: 500;
 }
 
 .section-item small {
-  display: block;
-  font-size: 12px;
-  opacity: 0.6;
-}
-
-.section-item:hover {
-  background: rgba(255, 255, 255, 0.05);
+  opacity: 0.7;
+  margin-left: 4px;
 }
 
 .section-item.active {
-  background: rgba(80, 120, 255, 0.16);
-  border-left-color: #5b8cff;
+  background: #eef3fb;
 }
 
-.section-item .badge {
-  font-size: 11px;
-  padding: 3px 6px;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.15);
-  opacity: 0.8;
+.section-item.inactive {
+  opacity: 0.5;
 }
 
-.section-item .badge.active {
-  background: rgba(90, 200, 120, 0.25);
-  color: #7dffad;
-}
-
-/* ======================================================
-   MAIN CONTENT
-   ====================================================== */
+/* Main editor */
 
 .admin-main {
-  padding: 28px;
-  overflow-y: auto;
+  flex: 1;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
 }
 
-/* ======================================================
-   EMPTY STATE
-   ====================================================== */
-
-.empty-state {
-  max-width: 420px;
-  margin: 120px auto;
-  text-align: center;
-  opacity: 0.65;
-}
-
-.empty-state h2 {
+#editorTitle {
+  margin-top: 0;
   margin-bottom: 8px;
-  font-size: 22px;
 }
 
-.empty-state p {
-  font-size: 14px;
+.section-form {
+  margin-top: 8px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #dde1e7;
+  padding-bottom: 12px;
 }
 
-/* ======================================================
-   SECTION EDITOR
-   ====================================================== */
-
-.section-editor {
-  max-width: 960px;
-  margin: 0 auto;
+.field-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 10px;
 }
+
+.field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.field label {
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+
+.field input,
+.field select,
+.field textarea {
+  font-size: 0.95rem;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid #cfd3dc;
+}
+
+.checkbox-field {
+  justify-content: flex-end;
+}
+
+/* Buttons */
+
+.btn-small {
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  border-radius: 999px;
+  border: none;
+  background: #4b6cb7;
+  color: #fff;
+  cursor: pointer;
+}
+
+.btn-primary {
+  margin-top: 6px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(180deg, #8ea0af, #65717d);
+  color: #fff;
+  cursor: pointer;
+}
+
+/* Algebra block */
+
+.algebra-block {
+  margin-top: 16px;
+}
+
+.hint {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  margin-bottom: 10px;
+}
+
+.question-form {
+  margin-bottom: 12px;
+}
+
+.questions-list {
+  max-height: 220px;
+  overflow-y: auto;
+  border-top: 1px solid #dde1e7;
+  padding-top: 8px;
+  margin-top: 8px;
+}
+
+.question-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid #f0f2f6;
+  font-size: 0.9rem;
+}
+
+.question-row span {
+  margin-right: 6px;
+}
+
+/* Utility */
 
 .hidden {
   display: none;
 }
 
-/* ======================================================
-   EDITOR HEADER
-   ====================================================== */
+/* Responsive */
 
-.editor-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.editor-header h2 {
-  margin: 0;
-  font-size: 24px;
-}
-
-.editor-header span {
-  font-size: 13px;
-  opacity: 0.6;
-}
-
-/* ======================================================
-   CARDS
-   ====================================================== */
-
-.card {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 22px;
-  margin-bottom: 26px;
-}
-
-.card h3 {
-  margin: 0 0 16px;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 14px;
-}
-
-/* ======================================================
-   FORM ELEMENTS
-   ====================================================== */
-
-label {
-  font-size: 12px;
-  letter-spacing: 0.02em;
-  opacity: 0.65;
-}
-
-input,
-textarea,
-select {
-  width: 100%;
-  margin-top: 6px;
-  margin-bottom: 14px;
-  padding: 10px 12px;
-
-  background: rgba(0, 0, 0, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-
-  color: #ffffff;
-  font-size: 14px;
-}
-
-textarea {
-  min-height: 140px;
-  resize: vertical;
-}
-
-input:focus,
-textarea:focus,
-select:focus {
-  border-color: #5b8cff;
-  outline: none;
-}
-
-/* ======================================================
-   GRID HELPERS
-   ====================================================== */
-
-.grid-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
-}
-
-/* ======================================================
-   BUTTONS
-   ====================================================== */
-
-button {
-  border: none;
-  border-radius: 8px;
-  padding: 10px 14px;
-  font-size: 14px;
-  background: #5b8cff;
-  color: white;
-  transition: transform 0.05s ease, background 0.15s ease;
-}
-
-button:hover {
-  background: #6a98ff;
-}
-
-button:active {
-  transform: translateY(1px);
-}
-
-button.secondary {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-button.secondary:hover {
-  background: rgba(255, 255, 255, 0.18);
-}
-
-button.danger {
-  background: #c44949;
-}
-
-button.danger:hover {
-  background: #d85c5c;
-}
-
-/* ======================================================
-   QUESTION LIST
-   ====================================================== */
-
-.question-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.question-item {
-  padding: 12px 14px;
-  background: rgba(0, 0, 0, 0.35);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.question-item span {
-  font-size: 14px;
-}
-
-.question-item .actions {
-  display: flex;
-  gap: 8px;
-}
-
-.icon-btn {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 6px 8px;
-  border-radius: 6px;
-  font-size: 13px;
-}
-
-.icon-btn:hover {
-  background: rgba(255, 255, 255, 0.18);
-}
-
-.icon-btn.danger {
-  background: rgba(255, 80, 80, 0.25);
-}
-
-/* ======================================================
-   SCROLLBAR (SUBTLE)
-   ====================================================== */
-
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-/* ======================================================
-   RESPONSIVE (OPTIONAL)
-   ====================================================== */
-
-@media (max-width: 900px) {
+@media (max-width: 800px) {
   .admin-shell {
-    grid-template-columns: 1fr;
+    flex-direction: column;
   }
-
   .admin-sidebar {
-    display: none;
+    width: 100%;
+    min-width: 0;
+    border-right: none;
+    border-bottom: 1px solid #dde1e7;
   }
-}
-/* MODAL */
-.modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.55);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-}
-
-.modal-card {
-  width: 420px;
-  background: rgba(20, 30, 60, 0.95);
-  border-radius: 16px;
-  padding: 24px;
-}
-
-.modal-card h3 {
-  margin-top: 0;
 }
