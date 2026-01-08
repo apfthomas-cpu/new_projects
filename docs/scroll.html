@@ -1,44 +1,40 @@
+<!-- docs/scroll.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Cranium Gymnasium – Scrolling Accuracy</title>
+  <title>Cranium Gymnasium – Scrolling Text</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Base + page CSS -->
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/scroll.css">
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/scroll.css" />
 </head>
 
-<body>
-
-  <main class="page">
-
-    <section class="glass-panel">
-
+<body class="page">
+  <main class="scroll-page">
+    <section class="scroll-card">
       <header class="scroll-header">
-        <h1>Cranium Gymnasium</h1>
-        <p class="subtitle">Scrolling Accuracy Exercise</p>
+        <h1>Scrolling Text Exercise</h1>
+        <p id="scrollUser" class="scroll-user"></p>
       </header>
 
-      <!-- SCROLL AREA -->
       <div class="scroll-wrapper">
-        <div id="scroll-text" class="scroll-content">
-          Loading…
+        <div id="scrollText" class="scroll-text">
+          <!-- Placeholder text; replace with your real text -->
+          <p>
+            This is sample scrolling text. You will replace this with
+            your own passage later. Each word can be clicked and will be
+            highlighted. The text scrolls smoothly upwards.
+          </p>
+          <p>
+            When the passage has fully scrolled off the screen, this
+            section will end and your performance will be recorded.
+          </p>
         </div>
       </div>
-
-      <footer class="scroll-footer">
-        <span id="status">Loading…</span>
-        <span>Score: <strong id="score">0</strong></span>
-      </footer>
-
     </section>
-
   </main>
 
-  <!-- JS LAST, ALWAYS -->
   <script type="module" src="js/scroll.js"></script>
-
 </body>
 </html>

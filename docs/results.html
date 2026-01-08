@@ -1,0 +1,88 @@
+<!-- docs/results.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cranium Gymnasium – Results</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/results.css" />
+</head>
+
+<body class="page">
+  <main class="results-page">
+    <section class="results-card">
+      <h1>Performance Summary</h1>
+      <p id="userLine" class="user-line"></p>
+
+      <div id="sectionsList" class="sections-list"></div>
+
+      <h2 id="totalLine" class="total-line"></h2>
+
+      <div class="results-actions">
+        <label for="retrySelect">Retry a section:</label>
+        <select id="retrySelect">
+          <option value="">-- choose section --</option>
+        </select>
+        <button id="retryBtn">Retry selected</button>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { getSession, saveSession } from "./js/session.js";
+
+    const s = getSession();
+    const userLine = document.getElementById("userLine");
+    const sectionsDiv = document.getElementById("sectionsList");
+    const totalLine = document.getElementById("totalLine");
+    const retrySelect = document.getElementById("retrySelect");
+    const retryBtn = document.getElementById("retryBtn");
+
+    if (s.user) {
+      userLine.textContent = `${s.user.name} – ${s.user.className || "Unknown class"}`;
+    } else {
+      userLine.textContent = "Anonymous user";
+    }
+
+    let totalScore = 0;
+    let totalMax = 0;
+
+    s.order.forEach(sectionId => {
+      const r = s.results[sectionId];
+      if (!r) return;
+
+      totalScore += r.score;
+      totalMax += r.maxScore;
+
+      const row = document.createElement("div");
+      row.className = "section-row";
+      row.innerHTML = `
+        <span class="section-name">${sectionId.toUpperCase()}</span>
+        <span class="section-score">${r.score} / ${r.maxScore}</span>
+      `;
+      sectionsDiv.appendChild(row);
+
+      const opt = document.createElement("option");
+      opt.value = sectionId;
+      opt.textContent = sectionId.toUpperCase();
+      retrySelect.appendChild(opt);
+    });
+
+    totalLine.textContent = `Total: ${totalScore} / ${totalMax}`;
+
+    retryBtn.onclick = () => {
+      const sec = retrySelect.value;
+      if (!sec) return;
+
+      // Clear only that section's result
+      delete s.results[sec];
+      saveSession(s);
+
+      // Back to instructions for chosen section (retry mode not used yet, but future-proof)
+      window.location.href = `instructions.html?section=${sec}&mode=retry`;
+    };
+  </script>
+</body>
+</html>

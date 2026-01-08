@@ -1,0 +1,67 @@
+/* docs/css/results.css */
+
+.results-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.results-card {
+  width: min(800px, 95vw);
+  background: rgba(255,255,255,0.94);
+  border-radius: 26px;
+  padding: 32px 40px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+}
+
+.user-line {
+  margin-top: 4px;
+  margin-bottom: 20px;
+  opacity: 0.75;
+}
+
+.sections-list {
+  margin-bottom: 20px;
+}
+
+.section-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.section-name {
+  font-weight: 600;
+}
+
+.section-score {
+  font-weight: 600;
+}
+
+.total-line {
+  margin-top: 16px;
+  margin-bottom: 20px;
+}
+
+.results-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.results-actions select {
+  padding: 6px 10px;
+}
+
+.results-actions button {
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: none;
+  background: #4b6cb7;
+  color: #fff;
+  cursor: pointer;
+}

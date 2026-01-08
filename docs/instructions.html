@@ -1,13 +1,84 @@
-body {
-  color: #111;
+<!-- docs/instructions.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cranium Gymnasium – Instructions</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  /* Background image */
-  background-image: url("../media/Background.jpg");
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  <link rel="stylesheet" href="css/base.css" />
+  <style>
+    .page-shell {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
 
-  /* Fallback colour while image loads */
-  background-color: #1f2933;
-}
+    .instr-card {
+      width: 100%;
+      max-width: 640px;
+      padding: 40px 48px;
+      background: rgba(20,25,30,0.75);
+      color: #fff;
+      border-radius: 26px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.45);
+      text-align: center;
+      backdrop-filter: blur(18px);
+    }
+
+    .instr-section-label {
+      font-size: 0.9rem;
+      letter-spacing: 0.25em;
+      opacity: 0.8;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    .instr-heading {
+      font-size: 1.9rem;
+      margin-bottom: 18px;
+    }
+
+    .instr-text {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      margin-bottom: 10px;
+    }
+
+    #startBtn {
+      margin-top: 24px;
+      padding: 12px 28px;
+      border-radius: 16px;
+      border: none;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(180deg, #8ea0af, #65717d);
+      color: #fff;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.4);
+    }
+
+    #startBtn:disabled {
+      opacity: 0.6;
+      cursor: default;
+      box-shadow: none;
+    }
+  </style>
+</head>
+
+<body class="page">
+
+  <main class="page-shell">
+    <section class="instr-card">
+      <p id="sectionLabel" class="instr-section-label">Loading…</p>
+      <h1 id="instrHeading" class="instr-heading">Loading…</h1>
+      <div id="instrBody"></div>
+      <button id="startBtn" disabled>START</button>
+    </section>
+  </main>
+
+  <script type="module" src="js/instructions.js"></script>
+</body>
+</html>

@@ -1,56 +1,127 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta charset="UTF-8" />
   <title>Cranium Gymnasium – Sign In</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <link rel="stylesheet" href="css/base.css"/>
-  <link rel="stylesheet" href="css/buttons.css"/>
-  <link rel="stylesheet" href="css/signin.css"/>
+  <!-- Shared styling -->
+  <link rel="stylesheet" href="css/base.css" />
+
+  <!-- Optional page-specific polish -->
+  <style>
+    .sign-box {
+      width: 100%;
+      max-width: 480px;
+      padding: clamp(20px, 4vw, 42px);
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(14px);
+      border-radius: 24px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.28);
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      opacity: 0.8;
+      margin-bottom: 24px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    select, input {
+      font-size: 1rem;
+      padding: 12px 16px;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+    }
+
+    button {
+      padding: 12px 18px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #89939c, #70787f);
+      color: white;
+      font-size: 1.05rem;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.22);
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 26px rgba(0,0,0,0.28);
+    }
+
+    .error {
+      color: #b30000;
+      font-weight: 600;
+      min-height: 1.2em;
+    }
+  </style>
 </head>
 
-<body class="page fade">
+<body class="page">
 
-  <div class="app">
-    <main class="center-screen">
+<main class="center-screen">
+  <div class="sign-box">
+    <h1>Cranium Gymnasium</h1>
+    <p class="subtitle">Please sign in to begin</p>
 
-      <section class="glass-modal narrow fade-in">
-        <header class="app-header">
-          <h1 class="brand">Cranium Gymnasium</h1>
-          <p class="subtitle">Please enter your details to begin.</p>
-        </header>
+    <form id="signinForm">
+      <div>
+        <label for="classInput">Class</label><br>
+        <select id="classInput" required>
+          <option value="">-- Select class --</option>
+          <option value="Form 6">Form 6</option>
+          <option value="Form 7">Form 7</option>
+          <option value="Form 8">Form 8</option>
+          <option value="Visitor">Visitor</option>
+        </select>
+      </div>
 
-        <form id="signinForm">
-          <div class="field">
-            <label for="classSelect">Class</label>
-            <select id="classSelect" required>
-              <option value="">-- Select class --</option>
-              <option>Form 6</option>
-              <option>Form 7</option>
-              <option>Form 8</option>
-              <option>Visitor</option>
-            </select>
-          </div>
+      <div>
+        <label for="nameInput">Name</label><br>
+        <input id="nameInput" type="text" placeholder="Your name" required />
+      </div>
 
-          <div class="field">
-            <label for="nameInput">Name</label>
-            <input id="nameInput" type="text" placeholder="Your name" required/>
-          </div>
+      <button type="submit">Continue</button>
 
-          <div class="button-row">
-            <button class="cranium-button" type="submit">Continue</button>
-          </div>
-
-          <p id="errorMsg" class="error" aria-live="polite"></p>
-        </form>
-
-        <footer class="app-footer">🧠 Cranium Gymnasium</footer>
-      </section>
-
-    </main>
+      <div id="errorMsg" class="error"></div>
+    </form>
   </div>
+</main>
 
-  <script type="module" src="js/signin.js"></script>
+<script type="module">
+  import { setUser } from "./js/session.js";
+
+  const form = document.getElementById("signinForm");
+  const errorMsg = document.getElementById("errorMsg");
+
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+
+    const name = document.getElementById("nameInput").value.trim();
+    const cls  = document.getElementById("classInput").value;
+
+    if (!name || !cls) {
+      errorMsg.textContent = "Please enter name and class.";
+      return;
+    }
+
+    // Save user into session storage
+    setUser(name, cls);
+
+    // Start at Section 1 → instructions page
+    window.location.href = "instructions.html?section=scroll";
+  });
+</script>
+
 </body>
 </html>

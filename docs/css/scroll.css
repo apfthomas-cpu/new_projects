@@ -1,57 +1,59 @@
-/* HEADER */
+/* docs/css/scroll.css */
+
+.scroll-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.scroll-card {
+  width: min(1100px, 96vw);
+  height: min(80vh, 900px);
+  background: rgba(255,255,255,0.92);
+  border-radius: 26px;
+  padding: 32px 40px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+  display: flex;
+  flex-direction: column;
+}
+
 .scroll-header {
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 16px;
 }
 
-.scroll-header h1 {
-  font-size: 2.4rem;
-  font-weight: 700;
+.scroll-user {
+  margin-top: 4px;
+  font-size: 0.95rem;
+  opacity: 0.8;
 }
 
-.subtitle {
-  font-size: 1.1rem;
-  opacity: 0.75;
-  margin-top: 0.25rem;
-}
-
-/* SCROLL AREA */
+/* scrolling area */
 .scroll-wrapper {
   position: relative;
   flex: 1;
   overflow: hidden;
-
-  /* BLEED / BUFFER */
-  padding: 4rem 6% 3.5rem;
+  padding: 24px 8%;
+  border-top: 1px solid #ddd;
 }
 
-/* SCROLLING TEXT */
-.scroll-content {
+.scroll-text {
   position: absolute;
   left: 0;
   right: 0;
-
-  font-size: 1.6rem;      /* +50% readability */
-  line-height: 1.75;
-  color: #111;
+  font-size: 1.3rem;
+  line-height: 1.7;
 }
 
-/* WORD INTERACTION */
-.word {
+.scroll-text .word {
   cursor: pointer;
 }
 
-.word.clicked {
-  background: rgba(255,220,0,0.35);
-  border-radius: 6px;
-  padding: 0 4px;
-}
-
-/* FOOTER */
-.scroll-footer {
-  display: flex;
-  justify-content: space-between;
-  font-size: 1rem;
-  opacity: 0.85;
-  margin-top: 1.25rem;
+.scroll-text .word.clicked {
+  font-weight: 700;
+  background: rgba(255,215,0,0.3);
+  border-radius: 5px;
+  padding: 0 3px;
 }

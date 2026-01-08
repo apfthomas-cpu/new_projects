@@ -1,142 +1,92 @@
-// ===============================
-// FIREBASE IMPORTS (MODULE SAFE)
-// ===============================
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+// docs/js/scroll.js
 import {
-  getFirestore,
-  collection,
-  getDocs,
-  query,
-  where
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  getSession,
+  saveSectionResult,
+  getNextSectionId
+} from "./session.js";
 
-// ===============================
-// FIREBASE CONFIG
-// ===============================
-const firebaseConfig = {
-  apiKey: "AIzaSyCgjZv-a6t23QqELDSrY8402hZcY_N_Ors",
-  authDomain: "cranium-gymnasium.firebaseapp.com",
-  projectId: "cranium-gymnasium"
-};
+const session = getSession();
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const scrollUserEl = document.getElementById("scrollUser");
+const scrollTextEl = document.getElementById("scrollText");
 
-// ===============================
-// DOM GUARANTEE
-// ===============================
-const scrollText = document.getElementById("scroll-text");
-const statusEl = document.getElementById("status");
-const scoreEl = document.getElementById("score");
-
-if (!scrollText || !statusEl || !scoreEl) {
-  throw new Error("Scroll DOM elements missing");
+// Show user info
+if (session.user) {
+  scrollUserEl.textContent = `${session.user.name} – ${session.user.className || ""}`;
+} else {
+  scrollUserEl.textContent = "Anonymous user";
 }
 
-// ===============================
-// STATE
-// ===============================
-let position = 0;
-let speed = 35;
-let lastTime = performance.now();
-let score = 0;
-let started = false;
+// Prepare text: wrap each word in span.word
+const rawHtml = scrollTextEl.innerHTML;
+const tmpDiv = document.createElement("div");
+tmpDiv.innerHTML = rawHtml;
 
-// ===============================
-// HELPERS
-// ===============================
-function wrapWords(text) {
-  return text
-    .split(/\s+/)
+let totalWords = 0;
+let score = 0;
+
+tmpDiv.querySelectorAll("p").forEach(p => {
+  const words = p.innerText.split(/\s+/).filter(Boolean);
+  totalWords += words.length;
+  p.innerHTML = words
     .map(w => `<span class="word">${w}</span>`)
     .join(" ");
-}
+});
 
-function enableClicks() {
-  document.querySelectorAll(".word").forEach(word => {
-    word.addEventListener("click", () => {
-      if (word.classList.contains("clicked")) return;
-      word.classList.add("clicked");
-      score++;
-      scoreEl.textContent = score;
-    });
+scrollTextEl.innerHTML = tmpDiv.innerHTML;
+
+// Word click behaviour
+scrollTextEl.querySelectorAll(".word").forEach(span => {
+  span.addEventListener("click", () => {
+    if (span.classList.contains("clicked")) return;
+    span.classList.add("clicked");
+    score++;
   });
-}
+});
 
-// ===============================
-// SCROLL START (SAFE)
-// ===============================
-function startScroll() {
-  if (started) return;
-  started = true;
+// Basic scrolling
+let position = 0;
+let speed = 25; // pixels/sec
+let lastTime = performance.now();
+const wrapper = scrollTextEl.parentElement;
 
-  const wrapper = scrollText.parentElement;
+function setInitialPosition() {
   position = wrapper.offsetHeight;
-  scrollText.style.top = position + "px";
-
-  statusEl.textContent = "Scroll started";
-  requestAnimationFrame(scrollLoop);
+  scrollTextEl.style.top = position + "px";
 }
+setInitialPosition();
 
-// ===============================
-// SCROLL LOOP
-// ===============================
-function scrollLoop(t) {
+function animate(t) {
   const delta = (t - lastTime) / 1000;
   lastTime = t;
 
   position -= speed * delta;
-  scrollText.style.top = position + "px";
+  scrollTextEl.style.top = position + "px";
 
-  if (position + scrollText.offsetHeight < 0) {
-    statusEl.textContent = "Section complete";
+  const h = scrollTextEl.offsetHeight;
+  if (position + h < 0) {
+    endScrollSection();
     return;
   }
 
-  requestAnimationFrame(scrollLoop);
+  requestAnimationFrame(animate);
 }
 
-// ===============================
-// FIREBASE LOAD (BULLETPROOF)
-// ===============================
-async function loadFromFirebase() {
-  statusEl.textContent = "Loading exercise…";
+requestAnimationFrame(animate);
 
-  try {
-    const q = query(
-      collection(db, "sections"),
-      where("type", "==", "scroll"),
-      where("active", "==", true)
-    );
+function endScrollSection() {
+  // Save section result; score out of totalWords
+  saveSectionResult("scroll", {
+    score,
+    maxScore: totalWords,
+    finishedAt: Date.now()
+  });
 
-    const snap = await getDocs(q);
-
-    if (snap.empty) {
-      throw new Error("No active scroll sections");
-    }
-
-    const docs = snap.docs;
-    const random = docs[Math.floor(Math.random() * docs.length)];
-    const section = random.data();
-
-    scrollText.innerHTML = wrapWords(section.text);
-    enableClicks();
-    startScroll();
-
-  } catch (err) {
-    console.error("Firebase failed:", err);
-
-    // HARD FALLBACK — SCROLL MUST STILL WORK
-    scrollText.innerHTML = wrapWords(
-      "This is a fallback scrolling passage. Firebase failed to load, but the exercise still works."
-    );
-    enableClicks();
-    statusEl.textContent = "Offline mode";
-    startScroll();
+  // Move to next section or results
+  const nextId = getNextSectionId("scroll");
+  if (nextId) {
+    window.location.href = `instructions.html?section=${nextId}`;
+  } else {
+    window.location.href = "results.html";
   }
 }
-
-// ===============================
-// INIT
-// ===============================
-loadFromFirebase();
